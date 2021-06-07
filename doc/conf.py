@@ -70,7 +70,7 @@ html_static_path = []
 # Intersphinx setup
 
 intersphinx_mapping = {
-    'qutip': ('http://qutip.org/docs/latest/', None),
+    'qutip': ('https://qutip.org/docs/latest/', None),
     'python': ('https://docs.python.org/3', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
