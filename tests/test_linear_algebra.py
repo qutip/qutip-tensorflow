@@ -4,10 +4,13 @@ import qutip as qt
 import numpy as np
 import tensorflow as tf
 import scipy as sc
+from numpy.testing import assert_almost_equal
 
 size_max = 11
-size_n = 15
+size_n = 11
 size_list = np.logspace(1,size_max,size_n, base=2, dtype = int).tolist()
+operations = ["__matmul__", "__add__"]
+operation_ids = ["matmul", "add"]
 
 def generate_matrix(size, density):
     np.random.seed(1)
@@ -21,8 +24,10 @@ def generate_matrix(size, density):
     elif density=="dense":
         return np.random.random((size,size)) + 1j*np.random.random((size,size))
 
+
 def change_dtype(A, dtype):
-    "chnages a numpy matrix to tensorflow or scipy sparse"
+    """Changes a numpy matrix to tensorflow, scipy sparse or to a qutip.Data
+    specified by dtype"""
     if dtype == np:
         return A
     elif dtype == tf:
@@ -33,19 +38,26 @@ def change_dtype(A, dtype):
         A = qt.Qobj(A)
         return A.to(dtype)
 
+
 @pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
-                         ids=["numpy", "tensorflow", "scipy(sparse)",
-                              "qt.data.Dense", "qt.data.CSR"])
-@pytest.mark.parametrize("operation", ["__matmul__", "__add__"],
-                         ids=["matmul", "add"])
-@pytest.mark.parametrize("density", ["sparse", "dense"],
-                         ids=["sparse(tridiagonal)", "dense"])
+                         ids=["numpy",
+                              "tensorflow",
+                              "scipy(sparse)",
+                              "qt.data.Dense",
+                              "qt.data.CSR"])
+@pytest.mark.parametrize("operation",
+                         ["__matmul__", "__add__"],
+                         ids=["matmul", "add"]
+                        )
+@pytest.mark.parametrize("density",
+                         ["sparse", "dense"],
+                         ids=["sparse", "dense"])
 @pytest.mark.parametrize("size", size_list)
-def test_linear_algebra_ex(benchmark, dtype, size, operation, density, request):
-    # Group benchmark by operationa, density and size.
+def test_linear_algebra(benchmark, dtype, size, operation, density, request):
+    # Group benchmark by operation, density and size.
     group = request.node.callspec.id
     group = group.split('-')
-    benchmark.group = group[-2] + '-' + group[1] + '-' + group[0]
+    benchmark.group = group[0] + group[1] + group[2]
     benchmark.extra_info['dtype'] = group[-1]
 
     # Create unitary
@@ -55,6 +67,29 @@ def test_linear_algebra_ex(benchmark, dtype, size, operation, density, request):
 
     result = benchmark(operation, A)
 
-    # Ensure results are correct
-    assert True
+    return result
+
+
+
+@pytest.mark.parametrize("dtype", [qt.data.Dense], ids=["qt.data.Dense2"])
+@pytest.mark.parametrize("operation", operations, ids=operation_ids)
+def test_linear_algebra_qtf(dtype, operation):
+    """This is an example test to show how to test the new data layers using
+    `test_linear_algebra`.
+
+    TODO: qt.data.Dense needs to be replaced by qt.data.Dense_tf
+    """
+    density = "dense"
+    size = 4
+
+    # Create unitary
+    A = generate_matrix(size, density)
+    operation_np = getattr(A, operation)
+    result_np = operation_np(A)
+
+    A = change_dtype(A, dtype)
+    operation = getattr(A, operation)
+    result = operation(A)
+
+    assert_almost_equal(result_np, result.full())
 
