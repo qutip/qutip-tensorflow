@@ -45,19 +45,14 @@ def change_dtype(A, dtype):
                               "scipy(sparse)",
                               "qt.data.Dense",
                               "qt.data.CSR"])
-@pytest.mark.parametrize("operation",
-                         ["__matmul__", "__add__"],
-                         ids=["matmul", "add"]
-                        )
-@pytest.mark.parametrize("density",
-                         ["sparse", "dense"],
-                         ids=["sparse", "dense"])
+@pytest.mark.parametrize("operation", operations, ids=operation_ids)
+@pytest.mark.parametrize("density", ["sparse", "dense"])
 @pytest.mark.parametrize("size", size_list)
 def test_linear_algebra(benchmark, dtype, size, operation, density, request):
     # Group benchmark by operation, density and size.
     group = request.node.callspec.id
     group = group.split('-')
-    benchmark.group = group[0] + group[1] + group[2]
+    benchmark.group = '-'.join(group[:3])
     benchmark.extra_info['dtype'] = group[-1]
 
     # Create unitary
