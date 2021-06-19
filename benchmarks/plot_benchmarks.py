@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pytest
 import argparse
+import glob
 
 def unravel(data, key):
     for d in data:
@@ -13,7 +14,7 @@ def unravel(data, key):
             d[key+'_'+k] = v
     return data
 
-def benchmark_to_datafrane(filepath, df_save_path):
+def benchmark_to_datafrane(filepath):
     path = pathlib.Path(__file__).absolute().parents[1].joinpath(filepath)
     with open(path) as f:
         data = json.load(f)
@@ -30,18 +31,15 @@ def benchmark_to_datafrane(filepath, df_save_path):
         data.params_operation = data.group.str.split('-')
         data.params_operation = [d[0] for d in data.params_operation]
 
-        data.to_csv(df_save_path)
-
         return data
 
-def plot_benchmark(df_path, destination_folder):
-    df = pd.read_csv(df_path, index_col=0)
+def plot_benchmark(df, destination_folder):
     grouped = df.groupby([ 'params_operation', 'params_density'])
     for (operation,density), group in grouped:
         for dtype,g in group.groupby('extra_info_dtype'):
             plt.errorbar(g.params_size, g.stats_mean, g.stats_stddev, fmt='.-', label=dtype)
 
-        plt.title(operation + str(density))
+        plt.title(f"{operation} {density}")
         plt.legend()
         plt.yscale('log')
         plt.xscale('log')
@@ -51,18 +49,43 @@ def plot_benchmark(df_path, destination_folder):
 def run_benchmarks(args):
     pytest.main(["--benchmark-only",
                  "--benchmark-columns=Mean,StdDev",
-                 "--benchmark-sort=name"] +
+                 "--benchmark-sort=name",
+                 "--benchmark-autosave"] +
                args)
+
+def get_latest_benchmark_path():
+    """Returns the path to the latest benchmark run."""
+
+    benchmark_paths = glob.glob("./.benchmarks/*/*.json")
+    dates = [''.join(_b.split("/")[-1].split('_')[2:4])
+             for _b in benchmark_paths]
+    benchmarks = {date: value for date,value in zip(dates, benchmark_paths)}
+
+    dates.sort()
+    latest = dates[-1]
+    benchmark_latest = benchmarks[latest]
+
+    return benchmark_latest
 
 
 if __name__ == '__main__':
-    filepath = ".benchmarks/Linux-CPython-3.8-64bit/0031_f6c63e6c1b95a648627a1cc6382f27c3a0181c78_20210618_142829_uncommited-changes.json"
-    df_save_path = ".benchmarks/Linux-CPython-3.8-64bit/latest.csv"
-    figures_save_path = ".benchmarks/figures/"
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("--save_csv", default=".benchmarks/latest.csv")
+    parser.add_argument("--save_plots", default=".benchmarks/figures")
+    parser.add_argument("--plot_only", action="store_true")
     args, other_args = parser.parse_known_args()
 
-    run_benchmarks(other_args)
-    benchmark_to_datafrane(filepath, df_save_path)
-    plot_benchmark(df_save_path, figures_save_path)
+    if not args.plot_only:
+        run_benchmarks(other_args)
+
+    benchmark_latest = get_latest_benchmark_path()
+    benchmark_latest = benchmark_to_datafrane(benchmark_latest)
+
+    # Save results as csv
+    if args.save_csv:
+        benchmark_latest.to_csv(args.save_csv)
+
+    if not args.save_plots:
+        plot_benchmark(benchmark_latest, args.save_plots)
+
