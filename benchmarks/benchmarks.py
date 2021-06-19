@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import pytest
 import argparse
 import glob
+from pathlib import Path
 
 def unravel(data, key):
     for d in data:
@@ -29,7 +30,7 @@ def benchmark_to_datafrane(filepath):
         # UNSERIALIZABLE[<function Qobj.__mammal__ at 0x...)
         # The name of the operation is obtained from the group name
         data.params_operation = data.group.str.split('-')
-        data.params_operation = [d[0] for d in data.params_operation]
+        data.params_operation = [d[-1] for d in data.params_operation]
 
         return data
 
@@ -43,7 +44,7 @@ def plot_benchmark(df, destination_folder):
         plt.legend()
         plt.yscale('log')
         plt.xscale('log')
-        plt.savefig(f".benchmarks/figures/{operation}_density={density}.png")
+        plt.savefig(f".benchmarks/figures/{operation}_{density}.png")
         plt.close()
 
 def run_benchmarks(args):
@@ -67,14 +68,25 @@ def get_latest_benchmark_path():
 
     return benchmark_latest
 
-
-if __name__ == '__main__':
-
+def main(args=[]):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--save_csv", default=".benchmarks/latest.csv")
-    parser.add_argument("--save_plots", default=".benchmarks/figures")
-    parser.add_argument("--plot_only", action="store_true")
-    args, other_args = parser.parse_known_args()
+    parser.add_argument("--save_csv", default=".benchmarks/latest.csv",
+                        help="""Path where the latest benchmark resulst will be
+                        stored as csv. If empty it will not store results as
+                        csv. Default: .benchmarks/latest.csv""")
+    parser.add_argument("--save_plots", default=".benchmarks/figures",
+                       help = """Path where the plots will be saved. If empty,
+                        it will not save the plots. Default:
+                        .benchmarks/figures""")
+    parser.add_argument("--plot_only", action="store_true",
+                       help="""If included, it will not run the benchmarks but
+                        just plot the latest results from .benchmaks/ folder.
+                        """)
+
+    if args:
+        args, other_args = parser.parse_known_args([])
+    else:
+        args, other_args = parser.parse_known_args()
 
     if not args.plot_only:
         run_benchmarks(other_args)
@@ -86,6 +98,10 @@ if __name__ == '__main__':
     if args.save_csv:
         benchmark_latest.to_csv(args.save_csv)
 
-    if not args.save_plots:
+    if args.save_plots:
+        Path(args.save_plots).mkdir(parents=True, exist_ok=True)
         plot_benchmark(benchmark_latest, args.save_plots)
 
+
+if __name__ == '__main__':
+    main()
