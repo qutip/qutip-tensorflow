@@ -7,11 +7,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-addopts = "--strict-config --strict-markers  --benchmark-skip"
+addopts = "-Werror --strict-config --strict-markers  --benchmark-skip"
 testpaths = [
     "tests",
 ]
-filterwarnings = [
-"error",
-'ignore: the imp module is deprecated :DeprecationWarning',
-			]
