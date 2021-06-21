@@ -15,7 +15,7 @@ def unravel(data, key):
             d[key+'_'+k] = v
     return data
 
-def benchmark_to_datafrane(filepath):
+def benchmark_to_dataframe(filepath):
     path = pathlib.Path(__file__).absolute().parents[1].joinpath(filepath)
     with open(path) as f:
         data = json.load(f)
@@ -92,7 +92,7 @@ def main(args=[]):
         run_benchmarks(other_args)
 
     benchmark_latest = get_latest_benchmark_path()
-    benchmark_latest = benchmark_to_datafrane(benchmark_latest)
+    benchmark_latest = benchmark_to_dataframe(benchmark_latest)
 
     # Save results as csv
     if args.save_csv:
