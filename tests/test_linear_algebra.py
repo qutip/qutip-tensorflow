@@ -2,9 +2,10 @@ import time
 import pytest
 import qutip as qt
 import numpy as np
-import tensorflow as tf
 import scipy as sc
 from numpy.testing import assert_almost_equal
+import warnings
+import tensorflow as tf
 
 size_max = 11
 size_n = 11
@@ -38,6 +39,81 @@ def change_dtype(A, dtype):
         A = qt.Qobj(A)
         return A.to(dtype)
 
+# Define operations using always these four input parameters.
+
+def get_matmul(dtype):
+    def matmul(A, B, dtype, rep):
+        for i in range(rep):
+            x = A@B
+
+        # synchronize GPU
+        if dtype == tf:
+            _ = x.numpy()
+
+        return x
+
+    return matmul
+
+def get_add(dtype):
+    def add(A, B, dtype, rep):
+        for i in range(rep):
+            x = A+B
+
+        # synchronize GPU
+        if dtype == tf:
+            _ = x.numpy()
+
+        return x
+
+
+    return add
+
+def get_expm(dtype):
+    if dtype == np:
+        op = sc.linalg.expm
+    elif dtype == tf:
+        op = tf.linalg.expm
+    elif dtype == sc:
+        op = sc.sparse.linalg.expm
+    elif issubclass(dtype, qt.data.base.Data):
+        op = qt.Qobj.expm
+
+
+    def expm(A, B, dtype, rep):
+        for _ in range(rep):
+            x = op(A)
+
+        # synchronize GPU
+        if dtype == tf:
+            _ = x.numpy()
+
+        return x
+
+    return expm
+
+# Should be using an Hermitian matrix as input but is not yet.
+def get_eigenvalues(dtype):
+    if dtype == np:
+        op = np.linalg.eigvals
+    elif dtype == tf:
+        op = tf.linalg.eigvals
+    elif dtype == sc:
+        op = np.linalg.eigvals
+    elif issubclass(dtype, qt.data.base.Data):
+        op = qt.Qobj.eigenenergies
+
+
+    def eigenvalues(A, B, dtype, rep):
+        for _ in range(rep):
+            x = op(A)
+
+        # synchronize GPU
+        if dtype == tf:
+            _ = x.numpy()
+
+        return x
+
+    return eigenvalues
 
 @pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
                          ids=["numpy",
@@ -45,10 +121,16 @@ def change_dtype(A, dtype):
                               "scipy(sparse)",
                               "qt.data.Dense",
                               "qt.data.CSR"])
-@pytest.mark.parametrize("operation", operations, ids=operation_ids)
+@pytest.mark.parametrize("get_operation", [get_matmul, get_add, get_expm,
+                                           get_eigenvalues],
+                         ids=["matmul",
+                             "add",
+                             "expm",
+                             "eigvals",
+                             ])
 @pytest.mark.parametrize("density", ["sparse", "dense"])
 @pytest.mark.parametrize("size", size_list)
-def test_linear_algebra(benchmark, dtype, size, operation, density, request):
+def test_linear_algebra(benchmark, dtype, size, get_operation, density, request):
     # Group benchmark by operation, density and size.
     group = request.node.callspec.id
     group = group.split('-')
@@ -58,12 +140,15 @@ def test_linear_algebra(benchmark, dtype, size, operation, density, request):
     # Create unitary
     A = generate_matrix(size, density)
     A = change_dtype(A, dtype)
-    operation = getattr(A, operation)
 
-    result = benchmark(operation, A)
+    operation = get_operation(dtype)
+
+    try:
+        result = benchmark(operation, A, A, dtype, 100)
+    except sc.sparse.base.SparseEfficiencyWarning:
+        result = 0
 
     return result
-
 
 
 @pytest.mark.parametrize("dtype", [qt.data.Dense], ids=["qt.data.Dense2"])

@@ -29,13 +29,13 @@ def benchmark_to_datafrane(filepath):
         # Set operation properly (for example: matmul instead of:
         # UNSERIALIZABLE[<function Qobj.__mammal__ at 0x...)
         # The name of the operation is obtained from the group name
-        data.params_operation = data.group.str.split('-')
-        data.params_operation = [d[-1] for d in data.params_operation]
+        data.params_get_operation = data.group.str.split('-')
+        data.params_get_operation = [d[-1] for d in data.params_get_operation]
 
         return data
 
 def plot_benchmark(df, destination_folder):
-    grouped = df.groupby([ 'params_operation', 'params_density'])
+    grouped = df.groupby([ 'params_get_operation', 'params_density'])
     for (operation,density), group in grouped:
         for dtype,g in group.groupby('extra_info_dtype'):
             plt.errorbar(g.params_size, g.stats_mean, g.stats_stddev, fmt='.-', label=dtype)
