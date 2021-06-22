@@ -45,7 +45,7 @@ def change_dtype(A, dtype):
 
 def get_matmul(dtype):
     def matmul(A, B, dtype, rep):
-        for i in range(rep):
+        for _ in range(rep):
             x = A@B
 
         # synchronize GPU
@@ -58,7 +58,7 @@ def get_matmul(dtype):
 
 def get_add(dtype):
     def add(A, B, dtype, rep):
-        for i in range(rep):
+        for _ in range(rep):
             x = A+B
 
         # synchronize GPU
@@ -66,8 +66,6 @@ def get_add(dtype):
             _ = x.numpy()
 
         return x
-
-
     return add
 
 def get_expm(dtype):
@@ -113,7 +111,6 @@ def get_eigenvalues(dtype):
             _ = x.numpy()
 
         return x
-
     return eigenvalues
 
 @pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
@@ -152,27 +149,3 @@ def test_linear_algebra(benchmark, dtype, size, get_operation, density, request)
         result = None
 
     return result
-
-
-@pytest.mark.parametrize("dtype", [qt.data.Dense], ids=["qt.data.Dense2"])
-@pytest.mark.parametrize("operation", operations, ids=operation_ids)
-def test_linear_algebra_qtf(dtype, operation):
-    """This is an example test to show how to test the new data layers using
-    `test_linear_algebra`.
-
-    TODO: qt.data.Dense needs to be replaced by qt.data.Dense_tf
-    """
-    density = "dense"
-    size = 4
-
-    # Create unitary
-    A = generate_matrix(size, density)
-    operation_np = getattr(A, operation)
-    result_np = operation_np(A)
-
-    A = change_dtype(A, dtype)
-    operation = getattr(A, operation)
-    result = operation(A)
-
-    assert_almost_equal(result_np, result.full())
-
