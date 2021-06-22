@@ -116,7 +116,6 @@ def get_eigenvalues(dtype):
 
     return eigenvalues
 
-@pytest.mark.benchmark(max_time=0.1)
 @pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
                          ids=["numpy",
                               "tensorflow",
