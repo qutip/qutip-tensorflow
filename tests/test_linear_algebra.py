@@ -3,9 +3,11 @@ import pytest
 import qutip as qt
 import numpy as np
 import scipy as sc
+import scipy.sparse
 from numpy.testing import assert_almost_equal
 import warnings
 import tensorflow as tf
+
 
 size_max = 11
 size_n = 11
@@ -91,14 +93,13 @@ def get_expm(dtype):
 
     return expm
 
-# Should be using an Hermitian matrix as input but is not yet.
 def get_eigenvalues(dtype):
     if dtype == np:
         op = np.linalg.eigvals
     elif dtype == tf:
         op = tf.linalg.eigvals
     elif dtype == sc:
-        op = np.linalg.eigvals
+        raise NotImplementedError
     elif issubclass(dtype, qt.data.base.Data):
         op = qt.Qobj.eigenenergies
 
@@ -115,14 +116,18 @@ def get_eigenvalues(dtype):
 
     return eigenvalues
 
+@pytest.mark.benchmark(max_time=0.1)
 @pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
                          ids=["numpy",
                               "tensorflow",
                               "scipy(sparse)",
                               "qt.data.Dense",
                               "qt.data.CSR"])
-@pytest.mark.parametrize("get_operation", [get_matmul, get_add, get_expm,
-                                           get_eigenvalues],
+@pytest.mark.parametrize("get_operation",
+                         [get_matmul,
+                          get_add,
+                          get_expm,
+                          get_eigenvalues],
                          ids=["matmul",
                              "add",
                              "expm",
@@ -141,12 +146,11 @@ def test_linear_algebra(benchmark, dtype, size, get_operation, density, request)
     A = generate_matrix(size, density)
     A = change_dtype(A, dtype)
 
-    operation = get_operation(dtype)
-
     try:
+        operation = get_operation(dtype)
         result = benchmark(operation, A, A, dtype, 100)
-    except sc.sparse.base.SparseEfficiencyWarning:
-        result = 0
+    except (NotImplementedError):
+        result = None
 
     return result
 
