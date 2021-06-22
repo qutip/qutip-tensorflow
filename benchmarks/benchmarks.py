@@ -9,6 +9,8 @@ import glob
 from pathlib import Path
 
 def unravel(data, key):
+    """Transforms {key:{another_key: values, another_key2: value2}} into
+    {key_another_key:value, key_another_key2:value}"""
     for d in data:
         values = d.pop(key)
         for k,v in values.items():
