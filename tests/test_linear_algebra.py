@@ -9,11 +9,9 @@ import warnings
 import tensorflow as tf
 
 
-size_max = 11
-size_n = 11
+size_max = 10
+size_n = 10
 size_list = np.logspace(1,size_max,size_n, base=2, dtype = int).tolist()
-operations = ["__matmul__", "__add__"]
-operation_ids = ["matmul", "add"]
 
 def generate_matrix(size, density):
     np.random.seed(1)
@@ -25,7 +23,8 @@ def generate_matrix(size, density):
         return np.diag(ofdiag, k=-1) + np.diag(diag, k=0) + np.diag(ofdiag, k=1)
 
     elif density=="dense":
-        return np.random.random((size,size)) + 1j*np.random.random((size,size))
+        H = np.random.random((size,size)) + 1j*np.random.random((size,size))
+        return H + H.T.conj()
 
 
 def change_dtype(A, dtype):
