@@ -16,6 +16,8 @@ def unravel(data, key):
     return data
 
 def benchmark_to_dataframe(filepath):
+    """Loads a JSON file where the benchmark is stored and returns a dataframe
+    with the benchmar information."""
     path = pathlib.Path(__file__).absolute().parents[1].joinpath(filepath)
     with open(path) as f:
         data = json.load(f)
@@ -35,6 +37,8 @@ def benchmark_to_dataframe(filepath):
         return data
 
 def plot_benchmark(df, destination_folder):
+    """Plots results using matplotlib. It iterates params_get_operation and
+    params_density and plots time vs N (for NxN matrices)"""
     grouped = df.groupby([ 'params_get_operation', 'params_density'])
     for (operation,density), group in grouped:
         for dtype,g in group.groupby('extra_info_dtype'):
@@ -45,13 +49,17 @@ def plot_benchmark(df, destination_folder):
         plt.yscale('log')
         plt.xscale('log')
         plt.savefig(f".benchmarks/figures/{operation}_{density}.png")
+        plt.xlabel("N")
+        plt.ylabel("t(s)")
         plt.close()
 
 def run_benchmarks(args):
+    "Run pytest benchmar with sensible defaults."
     pytest.main(["--benchmark-only",
-                 "--benchmark-columns=Mean,StdDev",
+                 "--benchmark-columns=Mean,StdDev,rounds,Iterations",
                  "--benchmark-sort=name",
-                 "--benchmark-autosave"] +
+                 "--benchmark-autosave",
+                 "-Wdefault"] +
                 args)
 
 def get_latest_benchmark_path():
