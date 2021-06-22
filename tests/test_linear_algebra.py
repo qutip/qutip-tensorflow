@@ -14,13 +14,18 @@ size_n = 10
 size_list = np.logspace(1,size_max,size_n, base=2, dtype = int).tolist()
 
 def generate_matrix(size, density):
+    """Generate a random matrix of size `sizexsize'. Density is either 'dense'
+    or 'sparse' and returns a fully dense or a tridiagonal matrix respectively.
+    The matrices are Hermitian."""
     np.random.seed(1)
 
     if density == "sparse":
         ofdiag = np.random.rand(size-1) + 1j*np.random.rand(size-1)
         diag = np.random.rand(size) + 1j*np.random.rand(size)
 
-        return np.diag(ofdiag, k=-1) + np.diag(diag, k=0) + np.diag(ofdiag, k=1)
+        return (np.diag(ofdiag, k=-1)
+                + np.diag(diag, k=0)
+                + np.diag(ofdiag.conj(), k=1))
 
     elif density=="dense":
         H = np.random.random((size,size)) + 1j*np.random.random((size,size))
@@ -41,11 +46,10 @@ def change_dtype(A, dtype):
         return A.to(dtype)
 
 # Define operations using always these four input parameters.
-
 def get_matmul(dtype):
-    def matmul(A, B, dtype, rep):
+    def matmul(A, dtype, rep):
         for _ in range(rep):
-            x = A@B
+            x = A@A
 
         # synchronize GPU
         if dtype == tf:
@@ -56,9 +60,9 @@ def get_matmul(dtype):
     return matmul
 
 def get_add(dtype):
-    def add(A, B, dtype, rep):
+    def add(A, dtype, rep):
         for _ in range(rep):
-            x = A+B
+            x = A+A
 
         # synchronize GPU
         if dtype == tf:
@@ -78,8 +82,8 @@ def get_expm(dtype):
         op = qt.Qobj.expm
 
 
-    def expm(A, B, dtype, rep):
-        for _ in range(rep):
+    def expm(A, dtype, rep):
+        for _ in range(1):
             x = op(A)
 
         # synchronize GPU
@@ -101,8 +105,8 @@ def get_eigenvalues(dtype):
         op = qt.Qobj.eigenenergies
 
 
-    def eigenvalues(A, B, dtype, rep):
-        for _ in range(rep):
+    def eigenvalues(A, dtype, rep):
+        for _ in range(1):
             x = op(A)
 
         # synchronize GPU
@@ -143,7 +147,7 @@ def test_linear_algebra(benchmark, dtype, size, get_operation, density, request)
 
     try:
         operation = get_operation(dtype)
-        result = benchmark(operation, A, A, dtype, 100)
+        result = benchmark(operation, A, dtype, 100)
     except (NotImplementedError):
         result = None
 
