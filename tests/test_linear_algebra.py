@@ -6,7 +6,11 @@ import scipy as sc
 import scipy.sparse
 from numpy.testing import assert_almost_equal
 import warnings
-import tensorflow as tf
+
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    import tensorflow as tf
 
 
 size_max = 10
