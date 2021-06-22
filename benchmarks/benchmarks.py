@@ -8,14 +8,16 @@ import argparse
 import glob
 from pathlib import Path
 
+
 def unravel(data, key):
     """Transforms {key:{another_key: values, another_key2: value2}} into
     {key_another_key:value, key_another_key2:value}"""
     for d in data:
         values = d.pop(key)
-        for k,v in values.items():
+        for k, v in values.items():
             d[key+'_'+k] = v
     return data
+
 
 def benchmark_to_dataframe(filepath):
     """Loads a JSON file where the benchmark is stored and returns a dataframe
@@ -38,13 +40,15 @@ def benchmark_to_dataframe(filepath):
 
         return data
 
+
 def plot_benchmark(df, destination_folder):
     """Plots results using matplotlib. It iterates params_get_operation and
     params_density and plots time vs N (for NxN matrices)"""
-    grouped = df.groupby([ 'params_get_operation', 'params_density'])
-    for (operation,density), group in grouped:
-        for dtype,g in group.groupby('extra_info_dtype'):
-            plt.errorbar(g.params_size, g.stats_mean, g.stats_stddev, fmt='.-', label=dtype)
+    grouped = df.groupby(['params_get_operation', 'params_density'])
+    for (operation, density), group in grouped:
+        for dtype, g in group.groupby('extra_info_dtype'):
+            plt.errorbar(g.params_size, g.stats_mean, g.stats_stddev,
+                         fmt='.-', label=dtype)
 
         plt.title(f"{operation} {density}")
         plt.legend()
@@ -55,6 +59,7 @@ def plot_benchmark(df, destination_folder):
         plt.ylabel("t(s)")
         plt.close()
 
+
 def run_benchmarks(args):
     "Run pytest benchmar with sensible defaults."
     pytest.main(["--benchmark-only",
@@ -64,19 +69,21 @@ def run_benchmarks(args):
                  "-Wdefault"] +
                 args)
 
+
 def get_latest_benchmark_path():
     """Returns the path to the latest benchmark run."""
 
     benchmark_paths = glob.glob("./.benchmarks/*/*.json")
     dates = [''.join(_b.split("/")[-1].split('_')[2:4])
              for _b in benchmark_paths]
-    benchmarks = {date: value for date,value in zip(dates, benchmark_paths)}
+    benchmarks = {date: value for date, value in zip(dates, benchmark_paths)}
 
     dates.sort()
     latest = dates[-1]
     benchmark_latest = benchmarks[latest]
 
     return benchmark_latest
+
 
 def main(args=[]):
     parser = argparse.ArgumentParser()
@@ -85,11 +92,11 @@ def main(args=[]):
                         stored as csv. If empty it will not store results as
                         csv. Default: .benchmarks/latest.csv""")
     parser.add_argument("--save_plots", default=".benchmarks/figures",
-                       help = """Path where the plots will be saved. If empty,
+                        help="""Path where the plots will be saved. If empty,
                         it will not save the plots. Default:
                         .benchmarks/figures""")
     parser.add_argument("--plot_only", action="store_true",
-                       help="""If included, it will not run the benchmarks but
+                        help="""If included, it will not run the benchmarks but
                         just plot the latest results from .benchmaks/ folder.
                         """)
 

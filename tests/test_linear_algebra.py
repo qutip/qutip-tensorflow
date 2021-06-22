@@ -11,7 +11,8 @@ import tensorflow as tf
 
 size_max = 10
 size_n = 10
-size_list = np.logspace(1,size_max,size_n, base=2, dtype = int).tolist()
+size_list = np.logspace(1, size_max, size_n, base=2, dtype=int).tolist()
+
 
 def generate_matrix(size, density):
     """Generate a random matrix of size `sizexsize'. Density is either 'dense'
@@ -27,8 +28,8 @@ def generate_matrix(size, density):
                 + np.diag(diag, k=0)
                 + np.diag(ofdiag.conj(), k=1))
 
-    elif density=="dense":
-        H = np.random.random((size,size)) + 1j*np.random.random((size,size))
+    elif density == "dense":
+        H = np.random.random((size, size)) + 1j*np.random.random((size, size))
         return H + H.T.conj()
 
 
@@ -45,8 +46,8 @@ def change_dtype(A, dtype):
         A = qt.Qobj(A)
         return A.to(dtype)
 
-# Define operations using always these four input parameters.
 
+# Define operations using always these four input parameters.
 def get_expm(dtype):
     if dtype == np:
         op = sc.linalg.expm
@@ -56,7 +57,6 @@ def get_expm(dtype):
         op = sc.sparse.linalg.expm
     elif issubclass(dtype, qt.data.base.Data):
         op = qt.Qobj.expm
-
 
     def expm(A, dtype, rep):
         for _ in range(1):
@@ -70,6 +70,7 @@ def get_expm(dtype):
 
     return expm
 
+
 def get_eigenvalues(dtype):
     if dtype == np:
         op = np.linalg.eigvals
@@ -79,7 +80,6 @@ def get_eigenvalues(dtype):
         raise NotImplementedError
     elif issubclass(dtype, qt.data.base.Data):
         op = qt.Qobj.eigenenergies
-
 
     def eigenvalues(A, dtype, rep):
         for _ in range(1):
@@ -91,6 +91,8 @@ def get_eigenvalues(dtype):
 
         return x
     return eigenvalues
+
+
 def get_matmul(dtype):
     def matmul(A, dtype, rep):
         for _ in range(rep):
@@ -103,6 +105,7 @@ def get_matmul(dtype):
         return x
 
     return matmul
+
 
 def get_add(dtype):
     def add(A, dtype, rep):
@@ -129,13 +132,15 @@ def get_add(dtype):
                           get_expm,
                           get_eigenvalues],
                          ids=["matmul",
-                             "add",
-                             "expm",
-                             "eigvals",
-                             ])
+                              "add",
+                              "expm",
+                              "eigvals",
+                              ]
+                         )
 @pytest.mark.parametrize("density", ["sparse", "dense"])
 @pytest.mark.parametrize("size", size_list)
-def test_linear_algebra(benchmark, dtype, size, get_operation, density, request):
+def test_linear_algebra(benchmark, dtype, size, get_operation, density,
+                        request):
     # Group benchmark by operation, density and size.
     group = request.node.callspec.id
     group = group.split('-')
