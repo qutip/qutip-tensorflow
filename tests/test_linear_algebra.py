@@ -46,30 +46,6 @@ def change_dtype(A, dtype):
         return A.to(dtype)
 
 # Define operations using always these four input parameters.
-def get_matmul(dtype):
-    def matmul(A, dtype, rep):
-        for _ in range(rep):
-            x = A@A
-
-        # synchronize GPU
-        if dtype == tf:
-            _ = x.numpy()
-
-        return x
-
-    return matmul
-
-def get_add(dtype):
-    def add(A, dtype, rep):
-        for _ in range(rep):
-            x = A+A
-
-        # synchronize GPU
-        if dtype == tf:
-            _ = x.numpy()
-
-        return x
-    return add
 
 def get_expm(dtype):
     if dtype == np:
@@ -115,6 +91,31 @@ def get_eigenvalues(dtype):
 
         return x
     return eigenvalues
+def get_matmul(dtype):
+    def matmul(A, dtype, rep):
+        for _ in range(rep):
+            x = A@A
+
+        # synchronize GPU
+        if dtype == tf:
+            _ = x.numpy()
+
+        return x
+
+    return matmul
+
+def get_add(dtype):
+    def add(A, dtype, rep):
+        for _ in range(rep):
+            x = A+A
+
+        # synchronize GPU
+        if dtype == tf:
+            _ = x.numpy()
+
+        return x
+    return add
+
 
 @pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
                          ids=["numpy",
@@ -145,6 +146,7 @@ def test_linear_algebra(benchmark, dtype, size, get_operation, density, request)
     A = generate_matrix(size, density)
     A = change_dtype(A, dtype)
 
+    # Benchmark operations and skip those that are not implemented.
     try:
         operation = get_operation(dtype)
         result = benchmark(operation, A, dtype, 100)
