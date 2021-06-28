@@ -55,11 +55,12 @@ class TensorDense(data.Data):
         return TensorDense(left._tf + right._tf)
 
 class VariableDense(TensorDense):
-    def __init__(self, data, shape=None, copy=True):
+    def __init__(self, data, shape=None, copy=True, initialize_tensor=True):
 
         super().__init__(data, shape, copy, initialize_tensor=False)
 
-        self._tf = tf.Variable(data, shape=shape, dtype=tf.complex128)
+        if initialize_tensor:
+            self._tf = tf.Variable(data, shape=shape, dtype=tf.complex128)
 
 
     def copy(self):
