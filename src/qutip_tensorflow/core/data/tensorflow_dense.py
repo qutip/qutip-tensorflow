@@ -8,7 +8,11 @@ class TensorDense(data.Data):
 
         # Try to inherit shape from data
         if shape==None:
-            shape = data.shape
+            try:
+                shape = data.shape
+            except AttributeError:
+                raise ValueError("""Shape could not be inferred from data. Please,
+                                 include the shape of data.""")
 
         # TensorFlow uses its own shape
         if isinstance(shape, tf.TensorShape):
