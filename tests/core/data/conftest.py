@@ -1,13 +1,12 @@
 import warnings
 
 import numpy as np
+import scipy.sparse
+import qutip
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import tensorflow as tf
-import scipy.sparse
-
-import qutip
-
 
 def shuffle_indices_scipy_csr(matrix):
     """
