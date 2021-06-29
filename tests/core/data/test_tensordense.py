@@ -1,8 +1,10 @@
 import numpy as np
+import tensorflow as tf
 import pytest
 
 from qutip.core import data
 from qutip.core.data import dense
+from qutip_tensorflow.core.data.tensorflow_dense import DenseTensor
 
 from . import conftest
 
@@ -40,9 +42,9 @@ def data_dense(shape, fortran):
 
 class TestClassMethods:
     def test_init_from_ndarray(self, numpy_dense):
-        test = data.Dense(numpy_dense)
+        test = DenseTensor(numpy_dense)
         assert test.shape == numpy_dense.shape
-        assert np.all(test.as_ndarray() == numpy_dense)
+        assert np.all(test.to_array() == numpy_dense)
 
     @pytest.mark.parametrize('dtype', ['complex128',
                                        'float64',
@@ -54,6 +56,20 @@ class TestClassMethods:
         assert test.shape == shape
         assert test.as_ndarray().dtype == np.complex128
         assert np.all(test.as_ndarray() == numpy_dense)
+
+    @pytest.mark.parametrize('dtype', ['complex128',
+                                       'float64',
+                                       'int32', 'int64',
+                                       'uint32'])
+    def test_init_from_tensor_other_dtype(self, shape, dtype):
+        numpy_dense = np.random.rand(*shape).astype(dtype, casting='unsafe')
+        tensor = tf.constant(numpy_dense)
+        test = DenseTensor(tensor)
+        assert test.shape == shape
+        assert test._tf.dtype == tf.complex128
+
+        tensor = tf.cast(tensor, dtype=tf.complex128)
+        assert np.all(test._tf == tensor)
 
     @pytest.mark.parametrize(['arg', 'kwargs', 'error'], [
         pytest.param(_valid_numpy(), {'shape': ()}, ValueError,
@@ -85,7 +101,7 @@ class TestClassMethods:
         marking the numpy actually owns the data.
         """
         with pytest.raises(error):
-            data.Dense(arg, **kwargs)
+            DenseTensor(arg, **kwargs)
 
     def test_copy_returns_a_correct_copy(self, data_dense):
         """
