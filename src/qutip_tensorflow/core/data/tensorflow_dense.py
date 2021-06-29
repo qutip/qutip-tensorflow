@@ -4,7 +4,7 @@ import tensorflow as tf
 import qutip.core.data as data
 
 class TensorDense(data.Data):
-    def __init__(self, data, shape=None, copy=True, initialize_tensor = True):
+    def __init__(self, data, shape=None, copy=True):
 
         # Try to inherit shape from data
         if shape==None:
@@ -28,10 +28,7 @@ class TensorDense(data.Data):
 
         super().__init__(shape)
 
-        # TODO: This is created and the overridend if using VariableDense, maybe not
-        # create if not necessary. 
-        if initialize_tensor:
-            self._tf = tf.constant(data, shape=shape, dtype=tf.complex128)
+        self._tf = tf.constant(data, shape=shape, dtype=tf.complex128)
 
 
     def copy(self):
@@ -58,17 +55,7 @@ class TensorDense(data.Data):
     def __add__(left, right):
         return TensorDense(left._tf + right._tf)
 
-class VariableDense(TensorDense):
-    def __init__(self, data, shape=None, copy=True, initialize_tensor=True):
-
-        super().__init__(data, shape, copy, initialize_tensor=False)
-
-        if initialize_tensor:
-            self._tf = tf.Variable(data, shape=shape, dtype=tf.complex128)
-
-
-    def copy(self):
-        return VariableDense(tf.identity(self._tf))
-
+    def __multiply__(left, right):
+        return TensorDense(left._tf * right._tf)
 
 
