@@ -132,33 +132,20 @@ class TestClassMethods:
         assert np.all(original._tf == copy._tf)
 
 
-    def test_as_ndarray_is_correct_result(self, numpy_dense):
-        """
-        Test that as_ndarray is actually giving the matrix we expect for a given
-        input.
-        """
-        data_dense = data.Dense(numpy_dense)
-        nd_view = data_dense.as_ndarray()
-        assert isinstance(data_dense.as_ndarray(), np.ndarray)
-        assert nd_view.ndim == 2
-        assert nd_view.shape == numpy_dense.shape
-        assert nd_view.strides == numpy_dense.strides
-        assert np.all(nd_view == numpy_dense)
-        assert nd_view.flags.c_contiguous == numpy_dense.flags.c_contiguous
-        assert nd_view.flags.f_contiguous == numpy_dense.flags.f_contiguous
-
-    def test_to_array_is_correct_result(self, data_dense):
-        test_array = data_dense.to_array()
-        nd_view = data_dense.as_ndarray()
+    def test_to_array_is_correct_result(self, data_tensor_dense):
+        test_array = data_tensor_dense.to_array()
         assert isinstance(test_array, np.ndarray)
         assert test_array.ndim == 2
-        assert test_array.shape == nd_view.shape
-        assert test_array.strides == nd_view.strides
-        assert test_array.flags.c_contiguous == nd_view.flags.c_contiguous
-        assert test_array.flags.f_contiguous == nd_view.flags.f_contiguous
+        assert test_array.shape == data_tensor_dense.shape
+
+        #TODO: thinks what to do with this.
+        #assert test_array.strides == nd_view.strides
+        #assert test_array.flags.c_contiguous == nd_view.flags.c_contiguous
+        #assert test_array.flags.f_contiguous == nd_view.flags.f_contiguous
         # It's not enough to be accurate within a tolerance here - there's no
         # mathematics, so they should be _identical_.
-        assert np.all(test_array == nd_view)
+        tensor = tf.constant(test_array)
+        assert np.all(test_array == data_tensor_dense._tf)
 
     @pytest.mark.parametrize('new_fortran', [
         pytest.param(-1, id='swap'),
@@ -180,6 +167,7 @@ class TestClassMethods:
             assert test.flags.c_contiguous
         assert np.all(orig == test)
 
+#TODO: Here I am.
 class TestFactoryMethods:
     def test_empty(self, shape):
         base = dense.empty(shape[0], shape[1])
