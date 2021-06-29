@@ -33,6 +33,7 @@ class DenseTensor(data.Data):
             and isinstance(shape[1], numbers.Integral)
             and shape[0] > 0
             and shape[1] > 0
+            and isinstance(shape, tuple)
         ):
             raise ValueError("shape must be a 2-tuple of positive ints, but is " + repr(shape))
 
@@ -41,7 +42,11 @@ class DenseTensor(data.Data):
         # if not copy and isinstance(data, tf.Tensor):
             # self._tf = tf
 
-        self._tf = tf.constant(data, shape=shape)
+        try:
+            self._tf = tf.constant(data, shape=shape)
+        except TypeError as e:
+            raise ValueError("Shape of data must match shape argument.") from e
+
         self._tf = tf.cast(self._tf, tf.complex128)
 
         if copy:

@@ -29,6 +29,10 @@ def _valid_numpy():
     # Arbitrary valid numpy array.
     return conftest.random_numpy_dense((5, 5), False)
 
+def _valid_tensor():
+    # Arbitrary valid numpy array.
+    return conftest.random_tensor_dense((5, 5))
+
 
 @pytest.fixture(scope='function')
 def numpy_dense(shape, fortran):
@@ -82,21 +86,21 @@ class TestClassMethods:
         assert np.all(test._tf == tensor)
 
     @pytest.mark.parametrize(['arg', 'kwargs', 'error'], [
-        pytest.param(_valid_numpy(), {'shape': ()}, ValueError,
+        pytest.param(_valid_tensor(), {'shape': ()}, ValueError,
                      id="numpy-shape 0 tuple"),
-        pytest.param(_valid_numpy(), {'shape': (1,)}, ValueError,
+        pytest.param(_valid_tensor(), {'shape': (1,)}, ValueError,
                      id="numpy-shape 1 tuple"),
-        pytest.param(_valid_numpy(), {'shape': (None, None)}, ValueError,
+        pytest.param(_valid_tensor(), {'shape': (None, None)}, ValueError,
                      id="numpy-shape None tuple"),
-        pytest.param(_valid_numpy(), {'shape': [2, 2]}, ValueError,
+        pytest.param(_valid_tensor(), {'shape': [2, 2]}, ValueError,
                      id="numpy-shape list"),
-        pytest.param(_valid_numpy(), {'shape': (1, 2, 3)}, ValueError,
+        pytest.param(_valid_tensor(), {'shape': (1, 2, 3)}, ValueError,
                      id="numpy-shape 3 tuple"),
-        pytest.param(_valid_numpy(), {'shape': (-1, 1)}, ValueError,
+        pytest.param(_valid_tensor(), {'shape': (-1, 1)}, ValueError,
                      id="numpy-negative shape"),
-        pytest.param(_valid_numpy(), {'shape': (-4, -4)}, ValueError,
+        pytest.param(_valid_tensor(), {'shape': (-4, -4)}, ValueError,
                      id="numpy-both negative shape"),
-        pytest.param(_valid_numpy(), {'shape': (1213, 1217)}, ValueError,
+        pytest.param(_valid_tensor(), {'shape': (1213, 1217)}, ValueError,
                      id="numpy-different shape"),
     ])
     def test_init_from_wrong_input(self, arg, kwargs, error):
