@@ -69,8 +69,3 @@ def random_csr(shape, density, sorted_):
     always be at least one (use data.csr.zeros otherwise).
     """
     return qutip.core.data.CSR(random_scipy_csr(shape, density, sorted_))
-
-
-def random_dense(shape, fortran):
-    """Generate a random qutip Dense matrix of the given shape."""
-    return qutip.core.data.Dense(random_numpy_dense(shape, fortran))

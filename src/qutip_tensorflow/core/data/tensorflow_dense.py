@@ -53,7 +53,7 @@ class DenseTensor(data.Data):
             self._tf = tf.identity(self._tf) # Copy
 
     def copy(self):
-        return TensorDense(self._tf, shape = self.shape, copy=True)
+        return DenseTensor(self._tf, shape = self.shape, copy=True)
 
     def to_array(self):
         return self._tf.numpy()

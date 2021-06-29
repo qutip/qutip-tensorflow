@@ -43,8 +43,8 @@ def tensor_dense(shape):
     return conftest.random_tensor_dense(shape)
 
 @pytest.fixture(scope='function')
-def data_dense(shape, fortran):
-    return conftest.random_dense(shape, fortran)
+def data_tensor_dense(tensor_dense):
+    return DenseTensor(tensor_dense)
 
 
 class TestClassMethods:
@@ -117,15 +117,15 @@ class TestClassMethods:
         with pytest.raises(error):
             DenseTensor(arg, **kwargs)
 
-    def test_copy_returns_a_correct_copy(self, data_dense):
+    def test_copy_returns_a_correct_copy(self, data_tensor_dense):
         """
         Test that the copy() method produces an actual copy, and that the
         result represents the same matrix.
         """
-        original = data_dense
-        copy = data_dense.copy()
+        original = data_tensor_dense
+        copy = data_tensor_dense.copy()
         assert original is not copy
-        assert np.all(original.as_ndarray() == copy.as_ndarray())
+        assert np.all(original._tf == copy._tf)
 
     def test_as_ndarray_returns_a_view(self, data_dense):
         """
