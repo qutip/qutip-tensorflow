@@ -1,4 +1,9 @@
+import warnings
+
 import numpy as np
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    import tensorflow as tf
 import scipy.sparse
 
 import qutip

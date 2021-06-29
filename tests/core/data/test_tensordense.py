@@ -34,6 +34,9 @@ def _valid_numpy():
 def numpy_dense(shape, fortran):
     return conftest.random_numpy_dense(shape, fortran)
 
+@pytest.fixture(scope='function')
+def tensor_dense(shape):
+    return conftest.random_tensor_dense(shape)
 
 @pytest.fixture(scope='function')
 def data_dense(shape, fortran):
@@ -46,16 +49,22 @@ class TestClassMethods:
         assert test.shape == numpy_dense.shape
         assert np.all(test.to_array() == numpy_dense)
 
+    def test_init_from_tensor(self, tensor_dense):
+        test = DenseTensor(tensor_dense)
+        assert test.shape == tuple(tensor_dense.shape.as_list())
+        assert np.all(test.to_array() == tensor_dense)
+
     @pytest.mark.parametrize('dtype', ['complex128',
                                        'float64',
                                        'int32', 'int64',
                                        'uint32'])
     def test_init_from_ndarray_other_dtype(self, shape, dtype):
         numpy_dense = np.random.rand(*shape).astype(dtype, casting='unsafe')
-        test = data.Dense(numpy_dense)
+        test = DenseTensor(numpy_dense)
         assert test.shape == shape
-        assert test.as_ndarray().dtype == np.complex128
-        assert np.all(test.as_ndarray() == numpy_dense)
+        assert test._tf.dtype == tf.complex128
+        assert test._tf.shape == shape
+        assert np.all(test.to_array() == numpy_dense)
 
     @pytest.mark.parametrize('dtype', ['complex128',
                                        'float64',
@@ -66,6 +75,7 @@ class TestClassMethods:
         tensor = tf.constant(numpy_dense)
         test = DenseTensor(tensor)
         assert test.shape == shape
+        assert test._tf.shape == shape
         assert test._tf.dtype == tf.complex128
 
         tensor = tf.cast(tensor, dtype=tf.complex128)

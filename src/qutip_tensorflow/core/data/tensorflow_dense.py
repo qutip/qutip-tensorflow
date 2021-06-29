@@ -6,7 +6,8 @@ import numbers
 
 class DenseTensor(data.Data):
     def __init__(self, data, shape=None, copy=True):
-        """We assume that """
+        # Copy is False by default so that when creating a tensor the graph is
+        # preserved. I would say that this is the default behaviour.
 
         # Try to inherit shape from data
         if shape==None:
@@ -37,10 +38,14 @@ class DenseTensor(data.Data):
 
         super().__init__(shape)
 
+        # if not copy and isinstance(data, tf.Tensor):
+            # self._tf = tf
+
+        self._tf = tf.constant(data, shape=shape)
+        self._tf = tf.cast(self._tf, tf.complex128)
+
         if copy:
-            self._tf = tf.identity(data, shape=shape, dtype=tf.complex128)
-        else:
-            self._tf = tf.constant(data, shape=shape, dtype=tf.complex128)
+            self._tf = tf.identity(self._tf) # Copy
 
     def copy(self):
         return TensorDense(self._tf, shape = self.shape, copy=True)
