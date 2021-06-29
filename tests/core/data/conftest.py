@@ -51,6 +51,12 @@ def random_numpy_dense(shape, fortran):
         out = np.asfortranarray(out)
     return out
 
+def random_tensor_dense(shape):
+    """Generate a random numpy dense matrix with the given shape."""
+    out = np.random.rand(*shape) + 1j*np.random.rand(*shape)
+    out = tf.constant(out)
+    return out
+
 
 def random_csr(shape, density, sorted_):
     """
