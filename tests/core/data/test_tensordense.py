@@ -59,7 +59,7 @@ class TestClassMethods:
         assert np.all(test.to_array() == tensor_dense)
 
         # by default we return a copy
-        assert not (test._tf is tensor_dense)
+        assert test._tf is not tensor_dense
 
     @pytest.mark.parametrize('dtype', ['complex128',
                                        'float64',
