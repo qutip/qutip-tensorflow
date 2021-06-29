@@ -88,6 +88,7 @@ class TestClassMethods:
         tensor = tf.cast(tensor, dtype=tf.complex128)
         assert np.all(test._tf == tensor)
 
+    #TODO: add test for instantiating with list.
     @pytest.mark.parametrize(['arg', 'kwargs', 'error'], [
         pytest.param(_valid_tensor(), {'shape': ()}, ValueError,
                      id="numpy-shape 0 tuple"),
@@ -129,18 +130,6 @@ class TestClassMethods:
         copy = data_tensor_dense.copy()
         assert original is not copy
         assert np.all(original._tf == copy._tf)
-
-    def test_as_ndarray_returns_a_view(self, data_dense):
-        """
-        Test that modifying the views in the result of as_ndarray() also
-        modifies the underlying data structures.  This is important for
-        allowing data modification from within Python-space.
-        """
-        unmodified_copy = data_dense.copy()
-        data_dense.as_ndarray()[0, 0] += 1
-        modified_copy = data_dense.copy()
-        assert np.any(data_dense.as_ndarray() != unmodified_copy.as_ndarray())
-        assert np.all(data_dense.as_ndarray() == modified_copy.as_ndarray())
 
     def test_as_ndarray_caches_result(self, data_dense):
         """
