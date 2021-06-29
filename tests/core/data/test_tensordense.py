@@ -131,30 +131,6 @@ class TestClassMethods:
         assert original is not copy
         assert np.all(original._tf == copy._tf)
 
-    def test_as_ndarray_caches_result(self, data_dense):
-        """
-        Test that the as_ndarray() method always returns the same view, even if
-        called multiple times.
-        """
-        assert data_dense.as_ndarray() is data_dense.as_ndarray()
-
-    def test_as_ndarray_of_dense_from_ndarray_is_different(self, numpy_dense):
-        """
-        Test that we produce a new ndarray, regardless of how we have
-        initialised the type.
-        """
-        assert data.Dense(numpy_dense).as_ndarray() is not numpy_dense
-
-    def test_as_ndarray_of_copy_is_different(self, data_dense):
-        """
-        Test that as_ndarray() does not return the same array or a view to the
-        same data, if it's not the same input matrix.  We don't want two Dense
-        matrices to be linked.
-        """
-        original = data_dense.as_ndarray()
-        copy = data_dense.copy().as_ndarray()
-        assert original is not copy
-        assert not np.may_share_memory(original, copy)
 
     def test_as_ndarray_is_correct_result(self, numpy_dense):
         """
