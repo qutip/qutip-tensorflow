@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 import qutip.core.data as data
 
-class TensorDense(data.Data):
+class DenseTensor(data.Data):
     def __init__(self, data, shape=None, copy=True):
 
         # Try to inherit shape from data
