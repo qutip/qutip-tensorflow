@@ -24,4 +24,3 @@ lib
 lib64
 .benchmarks
 .ipynb_checkpoints
-tags*
