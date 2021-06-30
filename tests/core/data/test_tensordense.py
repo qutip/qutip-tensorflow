@@ -147,6 +147,7 @@ class TestClassMethods:
         tensor = tf.constant(test_array)
         assert np.all(test_array == data_tensor_dense._tf)
 
+    #TODO: Here I am.
     @pytest.mark.parametrize('new_fortran', [
         pytest.param(-1, id='swap'),
         pytest.param(False, id='C'),
@@ -167,7 +168,6 @@ class TestClassMethods:
             assert test.flags.c_contiguous
         assert np.all(orig == test)
 
-#TODO: Here I am.
 class TestFactoryMethods:
     def test_empty(self, shape):
         base = dense.empty(shape[0], shape[1])
