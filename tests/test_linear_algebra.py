@@ -77,9 +77,9 @@ def get_expm(dtype):
 
 def get_eigenvalues(dtype):
     if dtype == np:
-        op = np.linalg.eigvals
+        op = np.linalg.eigvalsh
     elif dtype == tf:
-        op = tf.linalg.eigvals
+        op = tf.linalg.eigvalsh
     elif dtype == sc:
         raise NotImplementedError
     elif issubclass(dtype, qt.data.base.Data):
@@ -138,7 +138,7 @@ def get_add(dtype):
                          ids=["matmul",
                               "add",
                               "expm",
-                              "eigvals",
+                              "eigvalsh",
                               ]
                          )
 @pytest.mark.parametrize("density", ["sparse", "dense"])
