@@ -22,8 +22,7 @@ def unravel(data, key):
 def benchmark_to_dataframe(filepath):
     """Loads a JSON file where the benchmark is stored and returns a dataframe
     with the benchmar information."""
-    path = pathlib.Path(__file__).absolute().parents[1].joinpath(filepath)
-    with open(path) as f:
+    with open(filepath) as f:
         data = json.load(f)
         data = data['benchmarks']
         data = unravel(data, 'options')
@@ -61,7 +60,7 @@ def plot_benchmark(df, destination_folder):
 
 
 def run_benchmarks(args):
-    "Run pytest benchmar with sensible defaults."
+    "Run pytest benchmark with sensible defaults."
     pytest.main(["--benchmark-only",
                  "--benchmark-columns=Mean,StdDev,rounds,Iterations",
                  "--benchmark-sort=name",
@@ -71,7 +70,7 @@ def run_benchmarks(args):
 
 
 def get_latest_benchmark_path():
-    """Returns the path to the latest benchmark run."""
+    """Returns the path to the latest benchmark run from `./.benchmarks/`"""
 
     benchmark_paths = glob.glob("./.benchmarks/*/*.json")
     dates = [''.join(_b.split("/")[-1].split('_')[2:4])
@@ -88,7 +87,8 @@ def get_latest_benchmark_path():
 def main(args=[]):
     parser = argparse.ArgumentParser(description="""Run and plot the benchmarks.
                                      The script also accepts the same arguments
-                                     as pytest/pytest-benchmark.""")
+                                     as pytest/pytest-benchmark. The script must be run
+                                     from the root of the repository.""")
     parser.add_argument("--save_csv", default=".benchmarks/latest.csv",
                         help="""Path where the latest benchmark resulst will be
                         stored as csv. If empty it will not store results as
