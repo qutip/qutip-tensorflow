@@ -33,7 +33,7 @@ def benchmark_to_dataframe(filepath):
         data = pd.DataFrame(data)
 
         # Set operation properly (for example: matmul instead of:
-        # UNSERIALIZABLE[<function Qobj.__mammal__ at 0x...)
+        # UNSERIALIZABLE[<function Qobj.__matmul__ at 0x...)
         # The name of the operation is obtained from the group name
         data.params_get_operation = data.group.str.split('-')
         data.params_get_operation = [d[-1] for d in data.params_get_operation]
@@ -86,7 +86,9 @@ def get_latest_benchmark_path():
 
 
 def main(args=[]):
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="""Run and plot the benchmarks.
+                                     The script also accepts the same arguments
+                                     as pytest/pytest-benchmark.""")
     parser.add_argument("--save_csv", default=".benchmarks/latest.csv",
                         help="""Path where the latest benchmark resulst will be
                         stored as csv. If empty it will not store results as
