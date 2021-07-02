@@ -98,9 +98,9 @@ def get_eigenvalues(dtype):
 
 
 def get_matmul(dtype):
-    def matmul(A, dtype, rep):
+    def matmul(A, B, dtype, rep):
         for _ in range(rep):
-            x = A@A
+            x = A@B
 
         # synchronize GPU
         if dtype == tf:
@@ -112,9 +112,9 @@ def get_matmul(dtype):
 
 
 def get_add(dtype):
-    def add(A, dtype, rep):
+    def add(A, B, dtype, rep):
         for _ in range(rep):
-            x = A+A
+            x = A+B
 
         # synchronize GPU
         if dtype == tf:
@@ -131,19 +131,15 @@ def get_add(dtype):
                               "qt.data.Dense",
                               "qt.data.CSR"])
 @pytest.mark.parametrize("get_operation",
-                         [get_matmul,
-                          get_add,
-                          get_expm,
+                         [get_expm,
                           get_eigenvalues],
-                         ids=["matmul",
-                              "add",
-                              "expm",
+                         ids=["expm",
                               "eigvalsh",
                               ]
                          )
 @pytest.mark.parametrize("density", ["sparse", "dense"])
 @pytest.mark.parametrize("size", size_list)
-def test_linear_algebra(benchmark, dtype, size, get_operation, density,
+def test_linear_algebra_unary(benchmark, dtype, size, get_operation, density,
                         request):
     # Group benchmark by operation, density and size.
     group = request.node.callspec.id
@@ -159,6 +155,44 @@ def test_linear_algebra(benchmark, dtype, size, get_operation, density,
     try:
         operation = get_operation(dtype)
         result = benchmark(operation, A, dtype, 100)
+    except (NotImplementedError):
+        result = None
+
+    return result
+
+
+@pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
+                         ids=["numpy",
+                              "tensorflow",
+                              "scipy(sparse)",
+                              "qt.data.Dense",
+                              "qt.data.CSR"])
+@pytest.mark.parametrize("get_operation",
+                         [get_matmul,
+                          get_add,
+                         ],
+                         ids=["matmul",
+                              "add",
+                              ]
+                         )
+@pytest.mark.parametrize("density", ["sparse", "dense"])
+@pytest.mark.parametrize("size", size_list)
+def test_linear_algebra_binary(benchmark, dtype, size, get_operation, density,
+                        request):
+    # Group benchmark by operation, density and size.
+    group = request.node.callspec.id
+    group = group.split('-')
+    benchmark.group = '-'.join(group[:3])
+    benchmark.extra_info['dtype'] = group[-1]
+
+    # Create unitary
+    A = generate_matrix(size, density)
+    A = change_dtype(A, dtype)
+
+    # Benchmark operations and skip those that are not implemented.
+    try:
+        operation = get_operation(dtype)
+        result = benchmark(operation, A, A, dtype, 100)
     except (NotImplementedError):
         result = None
 
