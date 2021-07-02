@@ -67,14 +67,7 @@ class DenseTensor(data.Data):
     def adjoint(self):
         return TensorDense(tf.linalg.adjoint(self._tf))
 
-    # TODO: for auto differentiation it may be necessary to return a tensor
     def trace(self):
         return tf.linalg.trace(self._tf).numpy()
-
-    def __add__(left, right):
-        return TensorDense(left._tf + right._tf)
-
-    def __mul__(left, right):
-        return TensorDense(left._tf * right._tf)
 
 
