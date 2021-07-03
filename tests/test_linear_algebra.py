@@ -61,15 +61,15 @@ def change_dtype(A, dtype):
         A = qt.Qobj(A)
         return A.to(dtype)
 
+#Supported dtypes
+dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR]
+dtype_ids = ['numpy', 'tensorflow', 'scipy(CSR)', 'qutip(Dense)', 'qutip(CSR)']
+@pytest.fixture(params = dtype_list, ids=dtype_ids)
+def dtype(request): return request.param
 
-@pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
-                         ids=["numpy",
-                              "tensorflow",
-                              "scipy(sparse)",
-                              "qt.data.Dense",
-                              "qt.data.CSR"])
+
 @pytest.mark.parametrize("get_operation", unary_ops, ids=unary_ids)
-def test_linear_algebra_unary(benchmark, dtype, get_operation, matrix, request):
+def test_linear_algebra_unary(benchmark, matrix, dtype, get_operation, request):
     # Group benchmark by operation, density and size.
     group = request.node.callspec.id
     group = group.split('-')
@@ -89,15 +89,8 @@ def test_linear_algebra_unary(benchmark, dtype, get_operation, matrix, request):
 
     return result
 
-
-@pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
-                         ids=["numpy",
-                              "tensorflow",
-                              "scipy(sparse)",
-                              "qt.data.Dense",
-                              "qt.data.CSR"])
 @pytest.mark.parametrize("get_operation", binary_ops, ids=binary_ids)
-def test_linear_algebra_binary(benchmark, dtype, matrix, get_operation, request):
+def test_linear_algebra_binary(benchmark, matrix, dtype, get_operation, request):
     # Group benchmark by operation, density and size.
     group = request.node.callspec.id
     group = group.split('-')
