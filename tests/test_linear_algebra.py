@@ -6,20 +6,31 @@ import scipy as sc
 import scipy.sparse
 from numpy.testing import assert_almost_equal
 import warnings
+import benchmark_unary
+import benchmark_binary
 
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import tensorflow as tf
 
+# Get functions from unary ops that stater with `get`
+unary_ops = [ getattr(benchmark_unary,_) for _ in dir(benchmark_unary) if _[:3]=="get"]
+unary_ids = [ _[4:] for _ in dir(benchmark_unary) if _[:3]=="get"]
 
-size_max = 10
-size_n = 10
-size_list = np.logspace(1, size_max, size_n, base=2, dtype=int).tolist()
+binary_ops = [ getattr(benchmark_binary,_) for _ in dir(benchmark_binary) if _[:3]=="get"]
+binary_ids = [ _[4:] for _ in dir(benchmark_binary) if _[:3]=="get"]
 
 
-def generate_matrix(size, density):
-    """Generate a random matrix of size `sizexsize'. Density is either 'dense'
+@pytest.fixture(params = np.logspace(1, 10, 10, base=2, dtype=int).tolist())
+def size(request): return request.param
+
+@pytest.fixture(params = ["dense", "sparse"])
+def density(request): return request.param
+
+@pytest.fixture(scope='function')
+def matrix(size, density):
+    """Return a random matrix of size `sizexsize'. Density is either 'dense'
     or 'sparse' and returns a fully dense or a tridiagonal matrix respectively.
     The matrices are Hermitian."""
     np.random.seed(1)
@@ -51,96 +62,14 @@ def change_dtype(A, dtype):
         return A.to(dtype)
 
 
-# Define operations using always these four input parameters.
-def get_expm(dtype):
-    if dtype == np:
-        op = sc.linalg.expm
-    elif dtype == tf:
-        op = tf.linalg.expm
-    elif dtype == sc:
-        op = sc.sparse.linalg.expm
-    elif issubclass(dtype, qt.data.base.Data):
-        op = qt.Qobj.expm
-
-    def expm(A, dtype, rep):
-        for _ in range(1):
-            x = op(A)
-
-        # synchronize GPU
-        if dtype == tf:
-            _ = x.numpy()
-
-        return x
-
-    return expm
-
-
-def get_eigenvalues(dtype):
-    if dtype == np:
-        op = np.linalg.eigvalsh
-    elif dtype == tf:
-        op = tf.linalg.eigvalsh
-    elif dtype == sc:
-        raise NotImplementedError
-    elif issubclass(dtype, qt.data.base.Data):
-        op = qt.Qobj.eigenenergies
-
-    def eigenvalues(A, dtype, rep):
-        for _ in range(1):
-            x = op(A)
-
-        # synchronize GPU
-        if dtype == tf:
-            _ = x.numpy()
-
-        return x
-    return eigenvalues
-
-
-def get_matmul(dtype):
-    def matmul(A, B, dtype, rep):
-        for _ in range(rep):
-            x = A@B
-
-        # synchronize GPU
-        if dtype == tf:
-            _ = x.numpy()
-
-        return x
-
-    return matmul
-
-
-def get_add(dtype):
-    def add(A, B, dtype, rep):
-        for _ in range(rep):
-            x = A+B
-
-        # synchronize GPU
-        if dtype == tf:
-            _ = x.numpy()
-
-        return x
-    return add
-
-
 @pytest.mark.parametrize("dtype", [np, tf, sc, qt.data.Dense, qt.data.CSR],
                          ids=["numpy",
                               "tensorflow",
                               "scipy(sparse)",
                               "qt.data.Dense",
                               "qt.data.CSR"])
-@pytest.mark.parametrize("get_operation",
-                         [get_expm,
-                          get_eigenvalues],
-                         ids=["expm",
-                              "eigvalsh",
-                              ]
-                         )
-@pytest.mark.parametrize("density", ["sparse", "dense"])
-@pytest.mark.parametrize("size", size_list)
-def test_linear_algebra_unary(benchmark, dtype, size, get_operation, density,
-                        request):
+@pytest.mark.parametrize("get_operation", unary_ops, ids=unary_ids)
+def test_linear_algebra_unary(benchmark, dtype, get_operation, matrix, request):
     # Group benchmark by operation, density and size.
     group = request.node.callspec.id
     group = group.split('-')
@@ -148,7 +77,7 @@ def test_linear_algebra_unary(benchmark, dtype, size, get_operation, density,
     benchmark.extra_info['dtype'] = group[-1]
 
     # Create unitary
-    A = generate_matrix(size, density)
+    A = matrix
     A = change_dtype(A, dtype)
 
     # Benchmark operations and skip those that are not implemented.
@@ -167,32 +96,20 @@ def test_linear_algebra_unary(benchmark, dtype, size, get_operation, density,
                               "scipy(sparse)",
                               "qt.data.Dense",
                               "qt.data.CSR"])
-@pytest.mark.parametrize("get_operation",
-                         [get_matmul,
-                          get_add,
-                         ],
-                         ids=["matmul",
-                              "add",
-                              ]
-                         )
-@pytest.mark.parametrize("density", ["sparse", "dense"])
-@pytest.mark.parametrize("size", size_list)
-def test_linear_algebra_binary(benchmark, dtype, size, get_operation, density,
-                        request):
+@pytest.mark.parametrize("get_operation", binary_ops, ids=binary_ids)
+def test_linear_algebra_binary(benchmark, dtype, matrix, get_operation, request):
     # Group benchmark by operation, density and size.
     group = request.node.callspec.id
     group = group.split('-')
     benchmark.group = '-'.join(group[:3])
     benchmark.extra_info['dtype'] = group[-1]
 
-    # Create unitary
-    A = generate_matrix(size, density)
-    A = change_dtype(A, dtype)
+    matrix = change_dtype(matrix, dtype)
 
     # Benchmark operations and skip those that are not implemented.
     try:
         operation = get_operation(dtype)
-        result = benchmark(operation, A, A, dtype, 100)
+        result = benchmark(operation, matrix, matrix, dtype, 100)
     except (NotImplementedError):
         result = None
 
