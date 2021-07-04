@@ -1,8 +1,13 @@
+import warnings
+import numbers
+
 import qutip as qt
 import numpy as np
-import tensorflow as tf
 import qutip.core.data as data
-import numbers
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    import tensorflow as tf
 
 __all__ = ['DenseTensor']
 
