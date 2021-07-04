@@ -4,6 +4,8 @@ import tensorflow as tf
 import qutip.core.data as data
 import numbers
 
+__all__ = ['DenseTensor']
+
 class DenseTensor(data.Data):
     def __init__(self, data, shape=None, copy=True):
         # Copy is False by default so that when creating a tensor the graph is
