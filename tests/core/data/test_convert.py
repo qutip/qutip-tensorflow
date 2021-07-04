@@ -5,10 +5,7 @@ import qutip as qt
 from .conftest import random_tensor_dense
 
 
-@pytest.fixture()
-def _dense_tensor():
-    return qtf.data.DenseTensor(random_tensor_dense((2,2)))
-
+_dense_tensor = qtf.data.DenseTensor(random_tensor_dense((2,2)))
 
 @pytest.mark.parametrize(['from_', 'base'], [
     pytest.param('tensorflow', _dense_tensor, id='from tensorflow str'),
@@ -23,8 +20,8 @@ def _dense_tensor():
     pytest.param('CSR', qt.data.CSR, id='to CSR STR'),
     pytest.param(qt.data.CSR, qt.data.CSR, id='to CSR type'),
     pytest.param('tensorflow', qtf.data.DenseTensor, id='to tensorflow str'),
-    pytest.param('DenseTensor', qtf.data.DenseTensor, id='to DenseTensor str'),
-    pytest.param(qtf.data.DenseTensor, qtf.data.DenseTensor, id='to DenseTensor type'),
+    pytest.param('DenseTensor', qtf.data.DenseTensor, id='to tensorflow str_type'),
+    pytest.param(qtf.data.DenseTensor, qtf.data.DenseTensor, id='to tensorflow type'),
 ])
 def test_converters_qtf_to_qt(from_, base, to_, dtype):
     converter = qtf.data.to[to_, from_]
@@ -44,10 +41,11 @@ def test_converters_qtf_to_qt(from_, base, to_, dtype):
 ])
 @pytest.mark.parametrize(['to_', 'dtype'], [
     pytest.param('tensorflow', qtf.data.DenseTensor, id='to tensorflow str'),
-    pytest.param('DenseTensor', qtf.data.DenseTensor, id='to DenseTensor str'),
-    pytest.param(qtf.data.DenseTensor, qtf.data.DenseTensor, id='to DenseTensor type'),
+    pytest.param('DenseTensor', qtf.data.DenseTensor, id='to tensorflow str_type'),
+    pytest.param(qtf.data.DenseTensor, qtf.data.DenseTensor, id='to tensorflow type'),
 ])
 def test_converters_qt_to_qtf(from_, base, to_, dtype):
+    print(base)
     converter = qtf.data.to[to_, from_]
     assert isinstance(converter(base), dtype)
     converter = qtf.data.to[to_]
