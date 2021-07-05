@@ -74,7 +74,7 @@ def test_linear_algebra_unary(benchmark, matrix, dtype, get_operation, request):
     group = request.node.callspec.id
     group = group.split('-')
     benchmark.group = '-'.join(group[1:])
-    benchmark.extra_info['dtype'] = group[-1]
+    benchmark.extra_info['dtype'] = group[0]
 
     # Create unitary
     A = matrix
@@ -95,7 +95,7 @@ def test_linear_algebra_binary(benchmark, matrix, dtype, get_operation, request)
     group = request.node.callspec.id
     group = group.split('-')
     benchmark.group = '-'.join(group[1:])
-    benchmark.extra_info['dtype'] = group[-1]
+    benchmark.extra_info['dtype'] = group[0]
 
     matrix = change_dtype(matrix, dtype)
 
