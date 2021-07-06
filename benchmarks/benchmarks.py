@@ -53,9 +53,9 @@ def plot_benchmark(df, destination_folder):
         plt.legend()
         plt.yscale('log')
         plt.xscale('log')
-        plt.savefig(f".benchmarks/figures/{operation}_{density}.png")
         plt.xlabel("N")
-        plt.ylabel("t(s)")
+        plt.ylabel("time (s)")
+        plt.savefig(f".benchmarks/figures/{operation}_{density}.png")
         plt.close()
 
 
