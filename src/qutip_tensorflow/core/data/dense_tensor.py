@@ -6,18 +6,33 @@ import numbers
 
 __all__ = ['DenseTensor']
 
-class DenseTensor(data.Data):
-    def __init__(self, data, shape=None, copy=True):
-        # Copy is False by default so that when creating a tensor the graph is
-        # preserved. I would say that this is the default behaviour.
 
+class DenseTensor(data.Data):
+    """This class provide a wraps around TensorFlow's Tensor.
+
+    Parameters
+    ----------
+    data: array-like
+        Data to be stored.
+    shape: (int, int)
+        Shape of data. Default None, it tries to infer the shape from data
+        accessing the attribute `data.shape`.
+    copy: bool
+        Default True. If True creates a copy of the data. If a `tf.Tensor` is
+        provided as data, it will only preserve the graph structure of the
+        original data if copy=False. If anything different to a `tf.Tensor` or
+        `tf.Variable` is provided, it will copy the data regardless of copy as
+        it needs to be moved to the GPU.
+    """
+
+    def __init__(self, data, shape=None, copy=True):
         # Try to inherit shape from data
-        if shape==None:
+        if shape is None:
             try:
                 shape = data.shape
             except AttributeError:
-                raise ValueError("""Shape could not be inferred from data. Please,
-                                 include the shape of data.""")
+                raise ValueError("""Shape could not be inferred from data.
+                                 Please, include the shape of data.""")
 
             if isinstance(shape, tf.TensorShape):
                 shape = tuple(shape.as_list())
@@ -28,7 +43,6 @@ class DenseTensor(data.Data):
             if len(shape) == 1:
                 shape = (shape[0], 1)
 
-
         if not (
             len(shape) == 2
             and isinstance(shape[0], numbers.Integral)
@@ -37,12 +51,10 @@ class DenseTensor(data.Data):
             and shape[1] > 0
             and isinstance(shape, tuple)
         ):
-            raise ValueError("shape must be a 2-tuple of positive ints, but is " + repr(shape))
+            raise ValueError("""shape must be a 2-tuple of positive ints, but
+                             is """ + repr(shape))
 
         super().__init__(shape)
-
-        # if not copy and isinstance(data, tf.Tensor):
-            # self._tf = tf
 
         try:
             self._tf = tf.constant(data, shape=shape)
@@ -52,10 +64,10 @@ class DenseTensor(data.Data):
         self._tf = tf.cast(self._tf, tf.complex128)
 
         if copy:
-            self._tf = tf.identity(self._tf) # Copy
+            self._tf = tf.identity(self._tf)  # Copy
 
     def copy(self):
-        return DenseTensor(self._tf, shape = self.shape, copy=True)
+        return DenseTensor(self._tf, shape=self.shape, copy=True)
 
     def to_array(self):
         return self._tf.numpy()
@@ -71,5 +83,3 @@ class DenseTensor(data.Data):
 
     def trace(self):
         return tf.linalg.trace(self._tf).numpy()
-
-
