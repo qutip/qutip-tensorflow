@@ -6,8 +6,8 @@ import scipy as sc
 import scipy.sparse
 from numpy.testing import assert_almost_equal
 import warnings
-import benchmark_unary
-import benchmark_binary
+from . import benchmark_unary
+from . import benchmark_binary
 
 
 with warnings.catch_warnings():

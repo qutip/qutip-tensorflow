@@ -1,1 +1,1 @@
-from .tensorflow_dense import *
+from .dense_tensor import *
