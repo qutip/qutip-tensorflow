@@ -22,7 +22,5 @@ develop-eggs
 .installed.cfg
 lib
 lib64
-.asv
 .benchmarks
 .ipynb_checkpoints
-tags*
