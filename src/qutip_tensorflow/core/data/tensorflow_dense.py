@@ -8,8 +8,22 @@ __all__ = ['DenseTensor']
 
 class DenseTensor(data.Data):
     def __init__(self, data, shape=None, copy=True):
-        # Copy is False by default so that when creating a tensor the graph is
-        # preserved. I would say that this is the default behaviour.
+        """This class provide a wraps around TensorFlow's Tensor.
+
+        Parameters
+        ----------
+        data: array-like
+            Data to be stored.
+        shape: (int, int)
+            Shape of data. Default None, it tries to infer the shape from data accessing the
+            attribute `data.shape`.
+        copy: bool
+            Default True. If True creates a copy of the data. If a `tf.Tensor` is
+            provided as data, it will only preserve the graph structure of the original
+            data if copy=False. If anything different to a `tf.Tensor` or `tf.Variable`
+            is provided, it will copy the data regardless of copy as it needs to be
+            moved to the GPU.
+        """
 
         # Try to inherit shape from data
         if shape==None:
