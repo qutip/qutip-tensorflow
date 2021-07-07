@@ -17,7 +17,7 @@ qt.data.to.add_conversions([
 ])
 
 # You can add user friendly name for conversion with `to` or Qobj creation functions:
-qt.data.to.register_aliases(['tensorflow'], DenseTensor)
+qt.data.to.register_aliases(['tftensor'], DenseTensor)
 qt.data.to.register_aliases(['DenseTensor'], DenseTensor)
 
 to = qt.data.to
