@@ -5,7 +5,7 @@ import pytest
 
 from qutip.core import data
 from qutip.core.data import dense
-from qutip_tensorflow.core.data.tensorflow_dense import DenseTensor
+from qutip_tensorflow.core.data import DenseTensor
 
 from . import conftest
 
