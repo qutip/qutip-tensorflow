@@ -30,7 +30,7 @@ class DenseTensor(data.Data):
         it needs to be moved to the GPU.
     """
 
-    def __init__(self, data, shape=None, copy=True):
+    def __init__(self, data, shape=None, copy=False):
         # Try to inherit shape from data
         if shape is None:
             try:

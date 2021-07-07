@@ -7,8 +7,18 @@ from .conftest import random_tensor_dense
 
 _dense_tensor = qtf.data.DenseTensor(random_tensor_dense((2,2)))
 
+@pytest.mark.parametrize(['base', 'dtype'], [
+    pytest.param(random_tensor_dense((2,2)), qtf.data.DenseTensor, id='Tensor'),
+    pytest.param(_dense_tensor, qtf.data.DenseTensor, id='DenseTensor'),
+])
+def test_create(base, dtype):
+    # The test of exactitude is done in test_csr, test_dense.
+    created = qt.data.create(base)
+    assert isinstance(created, dtype)
+
+
 @pytest.mark.parametrize(['from_', 'base'], [
-    pytest.param('tensorflow', _dense_tensor, id='from tensorflow str'),
+    pytest.param('tftensor', _dense_tensor, id='from tensorflow str'),
     pytest.param('DenseTensor', _dense_tensor, id='from DenseTensor str'),
     pytest.param(qtf.data.DenseTensor, _dense_tensor, id='from DenseTensor type'),
 ])
@@ -19,7 +29,7 @@ _dense_tensor = qtf.data.DenseTensor(random_tensor_dense((2,2)))
     pytest.param('csr', qt.data.CSR, id='to CSR str'),
     pytest.param('CSR', qt.data.CSR, id='to CSR STR'),
     pytest.param(qt.data.CSR, qt.data.CSR, id='to CSR type'),
-    pytest.param('tensorflow', qtf.data.DenseTensor, id='to tensorflow str'),
+    pytest.param('tftensor', qtf.data.DenseTensor, id='to tensorflow str'),
     pytest.param('DenseTensor', qtf.data.DenseTensor, id='to tensorflow str_type'),
     pytest.param(qtf.data.DenseTensor, qtf.data.DenseTensor, id='to tensorflow type'),
 ])
@@ -40,7 +50,7 @@ def test_converters_qtf_to_qt(from_, base, to_, dtype):
     pytest.param(qt.data.CSR, qt.data.csr.zeros(2, 2), id='from CSR type'),
 ])
 @pytest.mark.parametrize(['to_', 'dtype'], [
-    pytest.param('tensorflow', qtf.data.DenseTensor, id='to tensorflow str'),
+    pytest.param('tftensor', qtf.data.DenseTensor, id='to tensorflow str'),
     pytest.param('DenseTensor', qtf.data.DenseTensor, id='to tensorflow str_type'),
     pytest.param(qtf.data.DenseTensor, qtf.data.DenseTensor, id='to tensorflow type'),
 ])

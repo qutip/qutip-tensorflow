@@ -1,5 +1,6 @@
 import qutip as qt
-from .tensorflow_dense import DenseTensor
+from .dense_tensor import DenseTensor
+import tensorflow as tf
 
 __all__ = ['to']
 
@@ -7,8 +8,11 @@ __all__ = ['to']
 def _tf_from_dense(dense):
     return DenseTensor(dense.to_array())
 
-def _tf_to_dense(tfdense):
-    return qt.data.Dense(tfdense.to_array(), copy=False)
+def _tf_to_dense(tftensor):
+    return qt.data.Dense(tftensor.to_array(), copy=False)
+
+def is_tftensor(data):
+    return isinstance(data, tf.Tensor)
 
 # `add_conversions` will register the data layer
 qt.data.to.add_conversions([
@@ -17,7 +21,13 @@ qt.data.to.add_conversions([
 ])
 
 # You can add user friendly name for conversion with `to` or Qobj creation functions:
-qt.data.to.register_aliases(['tensorflow'], DenseTensor)
+qt.data.to.register_aliases(['tftensor'], DenseTensor)
 qt.data.to.register_aliases(['DenseTensor'], DenseTensor)
 
+qt.data.create.add_creators([
+    (is_tftensor, DenseTensor, 85),
+])
+
 to = qt.data.to
+create = qt.data.create
+
