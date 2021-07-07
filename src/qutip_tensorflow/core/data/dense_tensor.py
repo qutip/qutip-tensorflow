@@ -73,13 +73,13 @@ class DenseTensor(data.Data):
         return self._tf.numpy()
 
     def conj(self):
-        return TensorDense(tf.math.conj(self._tf))
+        return DenseTensor(tf.math.conj(self._tf))
 
     def transpose(self):
-        return TensorDense(tf.transpose(self._tf))
+        return DenseTensor(tf.transpose(self._tf))
 
     def adjoint(self):
-        return TensorDense(tf.linalg.adjoint(self._tf))
+        return DenseTensor(tf.linalg.adjoint(self._tf))
 
     def trace(self):
         return tf.linalg.trace(self._tf).numpy()
