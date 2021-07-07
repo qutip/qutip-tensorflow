@@ -7,6 +7,16 @@ from .conftest import random_tensor_dense
 
 _dense_tensor = qtf.data.DenseTensor(random_tensor_dense((2,2)))
 
+@pytest.mark.parametrize(['base', 'dtype'], [
+    pytest.param(random_tensor_dense((2,2)), qtf.data.DenseTensor, id='Tensor'),
+    pytest.param(_dense_tensor, qtf.data.DenseTensor, id='DenseTensor'),
+])
+def test_create(base, dtype):
+    # The test of exactitude is done in test_csr, test_dense.
+    created = qt.data.create(base)
+    assert isinstance(created, dtype)
+
+
 @pytest.mark.parametrize(['from_', 'base'], [
     pytest.param('tftensor', _dense_tensor, id='from tensorflow str'),
     pytest.param('DenseTensor', _dense_tensor, id='from DenseTensor str'),

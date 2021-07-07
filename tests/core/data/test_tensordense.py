@@ -73,8 +73,8 @@ class TestClassMethods:
         assert test.shape == tuple(tensor_dense.shape.as_list())
         assert np.all(test.to_array() == tensor_dense)
 
-        # by default we return a copy
-        assert test._tf is not tensor_dense
+        # by default we do not return a copy
+        assert test._tf is tensor_dense
 
     @pytest.mark.parametrize('dtype', ['complex128',
                                        'float64',
