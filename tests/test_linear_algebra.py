@@ -8,6 +8,7 @@ from numpy.testing import assert_almost_equal
 import warnings
 from . import benchmark_unary
 from . import benchmark_binary
+import qutip_tensorflow as qtf
 
 
 with warnings.catch_warnings():
@@ -62,8 +63,9 @@ def change_dtype(A, dtype):
         return A.to(dtype)
 
 #Supported dtypes
-dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR]
-dtype_ids = ['numpy', 'tensorflow', 'scipy(CSR)', 'qutip(Dense)', 'qutip(CSR)']
+dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.DenseTensor]
+dtype_ids = ['numpy', 'tensorflow', 'scipy(CSR)', 'qutip(Dense)', 'qutip(CSR)',
+            'qutip(DenseTensor)']
 @pytest.fixture(params = dtype_list, ids=dtype_ids)
 def dtype(request): return request.param
 
