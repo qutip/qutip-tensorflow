@@ -1,5 +1,5 @@
 import qutip as qt
-from .tensorflow_dense import DenseTensor
+from .dense_tensor import DenseTensor
 
 __all__ = ['add', 'add_DenseTensor', 'sub', 'sub_DenseTensor']
 
