@@ -95,7 +95,7 @@ class TestClassMethods:
                                        'uint32'])
     def test_init_from_ndarray_other_dtype(self, shape, dtype):
         _numpy_dense = np.random.rand(*shape).astype(dtype, casting='unsafe')
-        test = DenseTensor(numpy_dense)
+        test = DenseTensor(_numpy_dense)
         assert test.shape == shape
         assert test._tf.dtype == tf.complex128
         assert test._tf.shape == shape
