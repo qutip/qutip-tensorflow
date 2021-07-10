@@ -117,38 +117,8 @@ class TestClassMethods:
         assert np.all(test._tf == tensor)
 
     @pytest.mark.parametrize(['arg', 'kwargs', 'error'], [
-        pytest.param(_valid_tensor(), {'shape': ()}, ValueError,
-                     id="numpy-shape 0 tuple"),
-        pytest.param(_valid_tensor(), {'shape': (1,)}, ValueError,
-                     id="numpy-shape 1 tuple"),
-        pytest.param(_valid_tensor(), {'shape': (None, None)}, ValueError,
-                     id="numpy-shape None tuple"),
-        pytest.param(_valid_tensor(), {'shape': [2, 2]}, ValueError,
-                     id="numpy-shape list"),
-        pytest.param(_valid_tensor(), {'shape': (1, 2, 3)}, ValueError,
-                     id="numpy-shape 3 tuple"),
-        pytest.param(_valid_tensor(), {'shape': (-1, 1)}, ValueError,
-                     id="numpy-negative shape"),
-        pytest.param(_valid_tensor(), {'shape': (-4, -4)}, ValueError,
-                     id="numpy-both negative shape"),
-        pytest.param(_valid_tensor(), {'shape': (1213, 1217)}, ValueError,
-                     id="numpy-different shape"),
-    ])
-    def test_init_from_wrong_input(self, arg, kwargs, error):
-        """
-        Test that the __init__ method raises a suitable error when passed
-        incorrectly formatted inputs.
-
-        This test also serves as a *partial* check that Dense safely handles
-        deallocation in the presence of exceptions in its __init__ method.  If
-        the tests segfault, it's quite likely that the memory management isn't
-        being done correctly in the hand-off us setting our data buffers up and
-        marking the numpy actually owns the data.
-        """
-        with pytest.raises(error):
-            DenseTensor(arg, **kwargs)
-
-    @pytest.mark.parametrize(['arg', 'kwargs', 'error'], [
+        pytest.param(_valid_numpy(), {'shape': 1}, ValueError,
+                     id="numpy-shape no len obj"),
         pytest.param(_valid_numpy(), {'shape': ()}, ValueError,
                      id="numpy-shape 0 tuple"),
         pytest.param(_valid_numpy(), {'shape': (1,)}, ValueError,
@@ -165,49 +135,47 @@ class TestClassMethods:
                      id="numpy-both negative shape"),
         pytest.param(_valid_numpy(), {'shape': (1213, 1217)}, ValueError,
                      id="numpy-different shape"),
+        pytest.param(_valid_list(), {'shape': 1}, ValueError,
+                     id="list-shape no len obj"),
         pytest.param(_valid_list(), {'shape': ()}, ValueError,
-                     id="numpy-shape 0 tuple"),
+                     id="list-shape 0 tuple"),
         pytest.param(_valid_list(), {'shape': (1,)}, ValueError,
-                     id="numpy-shape 1 tuple"),
+                     id="list-shape 1 tuple"),
         pytest.param(_valid_list(), {'shape': (None, None)}, ValueError,
-                     id="numpy-shape None tuple"),
+                     id="list-shape None tuple"),
         pytest.param(_valid_list(), {'shape': [2, 2]}, ValueError,
-                     id="numpy-shape list"),
+                     id="list-shape list"),
         pytest.param(_valid_list(), {'shape': (1, 2, 3)}, ValueError,
-                     id="numpy-shape 3 tuple"),
+                     id="list-shape 3 tuple"),
         pytest.param(_valid_list(), {'shape': (-1, 1)}, ValueError,
-                     id="numpy-negative shape"),
+                     id="list-negative shape"),
         pytest.param(_valid_list(), {'shape': (-4, -4)}, ValueError,
-                     id="numpy-both negative shape"),
+                     id="list-both negative shape"),
         pytest.param(_valid_list(), {'shape': (1213, 1217)}, ValueError,
-                     id="numpy-different shape"),
+                     id="list-different shape"),
+        pytest.param(_valid_tensor(), {'shape': 1}, ValueError,
+                     id="tensor-shape no len obj"),
         pytest.param(_valid_tensor(), {'shape': ()}, ValueError,
-                     id="numpy-shape 0 tuple"),
+                     id="tensor-shape 0 tuple"),
         pytest.param(_valid_tensor(), {'shape': (1,)}, ValueError,
-                     id="numpy-shape 1 tuple"),
+                     id="tensor-shape 1 tuple"),
         pytest.param(_valid_tensor(), {'shape': (None, None)}, ValueError,
-                     id="numpy-shape None tuple"),
+                     id="tensor-shape None tuple"),
         pytest.param(_valid_tensor(), {'shape': [2, 2]}, ValueError,
-                     id="numpy-shape list"),
+                     id="tensor-shape list"),
         pytest.param(_valid_tensor(), {'shape': (1, 2, 3)}, ValueError,
-                     id="numpy-shape 3 tuple"),
+                     id="tensor-shape 3 tuple"),
         pytest.param(_valid_tensor(), {'shape': (-1, 1)}, ValueError,
-                     id="numpy-negative shape"),
+                     id="tensor-negative shape"),
         pytest.param(_valid_tensor(), {'shape': (-4, -4)}, ValueError,
-                     id="numpy-both negative shape"),
+                     id="tensor-both negative shape"),
         pytest.param(_valid_tensor(), {'shape': (1213, 1217)}, ValueError,
-                     id="numpy-different shape"),
+                     id="tensor-different shape"),
     ])
     def test_init_from_wrong_input(self, arg, kwargs, error):
         """
         Test that the __init__ method raises a suitable error when passed
         incorrectly formatted inputs.
-
-        This test also serves as a *partial* check that Dense safely handles
-        deallocation in the presence of exceptions in its __init__ method.  If
-        the tests segfault, it's quite likely that the memory management isn't
-        being done correctly in the hand-off us setting our data buffers up and
-        marking the numpy actually owns the data.
         """
         with pytest.raises(error):
             DenseTensor(arg, **kwargs)

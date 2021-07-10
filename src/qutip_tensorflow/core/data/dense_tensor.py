@@ -51,12 +51,12 @@ class DenseTensor(qutip.core.data.Data):
                 shape = (shape[0], 1)
 
         if not (
-            len(shape) == 2
+            isinstance(shape, tuple)
+            and len(shape) == 2
             and isinstance(shape[0], numbers.Integral)
             and isinstance(shape[1], numbers.Integral)
             and shape[0] > 0
             and shape[1] > 0
-            and isinstance(shape, tuple)
         ):
             raise ValueError("""Shape must be a 2-tuple of positive ints, but
                              is """ + repr(shape))
