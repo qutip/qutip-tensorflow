@@ -99,7 +99,7 @@ class TestClassMethods:
         assert test.shape == shape
         assert test._tf.dtype == tf.complex128
         assert test._tf.shape == shape
-        assert np.all(test.to_array() == numpy_dense)
+        assert np.all(test.to_array() == _numpy_dense)
 
     @pytest.mark.parametrize('dtype', ['complex128',
                                        'float64',
