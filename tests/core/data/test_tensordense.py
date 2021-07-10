@@ -221,6 +221,7 @@ class TestClassMethods:
         copy = data_tensor_dense.copy()
         assert original is not copy
         assert np.all(original._tf == copy._tf)
+        assert original._tf is not copy._tf
 
 
     def test_to_array_is_correct_result(self, data_tensor_dense):
