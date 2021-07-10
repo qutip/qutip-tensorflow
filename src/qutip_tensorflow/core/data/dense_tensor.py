@@ -1,31 +1,38 @@
-import qutip as qt
 import numpy as np
 import tensorflow as tf
-import qutip.core.data as data
+from tensorflow.errors import InvalidArgumentError
+import qutip
 import numbers
 
 __all__ = ['DenseTensor']
 
 
-class DenseTensor(data.Data):
-    """This class provide a wraps around TensorFlow's Tensor.
+class DenseTensor(qutip.core.data.Data):
+    """This class provide a wraps around TensorFlow's Tensor. IT will store data
+    as a Tensor of dtype `tf.complex128`. Data will be reshaped into a 2D
+    Tensor.
 
     Parameters
     ----------
     data: array-like
         Data to be stored.
     shape: (int, int)
-        Shape of data. Default None, it tries to infer the shape from data
+        Shape of data. Default `None`, it tries to infer the shape from data
         accessing the attribute `data.shape`.
     copy: bool
-        Default True. If True creates a copy of the data. If a `tf.Tensor` is
-        provided as data, it will only preserve the graph structure of the
-        original data if copy=False. If anything different to a `tf.Tensor` or
-        `tf.Variable` is provided, it will copy the data regardless of copy as
-        it needs to be moved to the GPU.
-    """
+        If `True` (default) then the object is copied. Otherwise, copy will only
+        be made if tf.constant returns a copy of data or if a copy is needed to
+        satisfy dtype (tf.complex128) and shape (2D Tensor)."""
 
     def __init__(self, data, shape=None, copy=False):
+        # If the input is a tensor this does not copy it. Otherwise it will
+        # return a copy.
+        data = tf.constant(data)
+
+        # If dtype of Tensor is already a tf.complex128 then this will not
+        # return a copy
+        data = tf.cast(data, tf.complex128)
+
         # Try to inherit shape from data
         if shape is None:
             try:
@@ -51,20 +58,23 @@ class DenseTensor(data.Data):
             and shape[1] > 0
             and isinstance(shape, tuple)
         ):
-            raise ValueError("""shape must be a 2-tuple of positive ints, but
+            raise ValueError("""Shape must be a 2-tuple of positive ints, but
                              is """ + repr(shape))
 
         super().__init__(shape)
 
+        # Only reshape when needed as reshape always returns a copy of the input
+        # Tensor.
         try:
-            self._tf = tf.constant(data, shape=shape)
-        except TypeError as e:
+            if shape!=tuple(data.shape.as_list()):
+                data = tf.reshape(data, shape)
+        except InvalidArgumentError as e:
             raise ValueError("Shape of data must match shape argument.") from e
 
-        self._tf = tf.cast(self._tf, tf.complex128)
-
         if copy:
-            self._tf = tf.identity(self._tf)  # Copy
+            self._tf = tf.identity(data)  # Copy
+        else:
+            self._tf = data
 
     def copy(self):
         return DenseTensor(self._tf, shape=self.shape, copy=True)
