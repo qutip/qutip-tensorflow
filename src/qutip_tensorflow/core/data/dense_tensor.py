@@ -33,7 +33,7 @@ class DenseTensor(qutip.core.data.Data):
         # return a copy
         data = tf.cast(data, tf.complex128)
 
-        # Try to inherit shape from data
+        # Try to inherit shape from data and expand shape
         if shape is None:
             try:
                 shape = data.shape
@@ -65,14 +65,15 @@ class DenseTensor(qutip.core.data.Data):
 
         # Only reshape when needed as reshape always returns a copy of the input
         # Tensor.
-        try:
-            if shape!=tuple(data.shape.as_list()):
+        if shape!=tuple(data.shape.as_list()):
+            try:
                 data = tf.reshape(data, shape)
-        except InvalidArgumentError as e:
-            raise ValueError("Shape of data must match shape argument.") from e
-
+            # We return ValueError to match what qutip returns.
+            except InvalidArgumentError as e:
+                raise ValueError("""Shape of data must
+                                 match shape argument.""") from e
         if copy:
-            self._tf = tf.identity(data)  # Copy
+            self._tf = tf.identity(data)
         else:
             self._tf = data
 
