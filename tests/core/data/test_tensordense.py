@@ -83,7 +83,7 @@ class TestClassMethods:
     def test_init_from_list_other_dtype(self, shape, dtype):
         numpy_dense = np.random.rand(*shape).astype(dtype, casting='unsafe')
         list_dense = numpy_dense.tolist()
-        test = DenseTensor(list_dense, numpy_dense.shape)
+        test = DenseTensor(list_dense)
         assert test.shape == shape
         assert test._tf.dtype == tf.complex128
         assert test._tf.shape == shape
