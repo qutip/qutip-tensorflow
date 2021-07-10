@@ -9,7 +9,7 @@ __all__ = ['DenseTensor']
 
 class DenseTensor(qutip.core.data.Data):
     """This class provide a wraps around TensorFlow's Tensor. IT will store data
-    as a Tensor of dtype `tf.complex128`. Data will be reshaped into a 2D
+    as a Tensor of dtype `tf.complex128`. Data will be expanded into a 2D
     Tensor.
 
     Parameters
