@@ -81,20 +81,20 @@ class TestClassMethods:
                                        'int32', 'int64',
                                        'uint32'])
     def test_init_from_list_other_dtype(self, shape, dtype):
-        numpy_dense = np.random.rand(*shape).astype(dtype, casting='unsafe')
-        list_dense = numpy_dense.tolist()
-        test = DenseTensor(list_dense)
+        _numpy_dense = np.random.rand(*shape).astype(dtype, casting='unsafe')
+        _list_dense = _numpy_dense.tolist()
+        test = DenseTensor(_list_dense)
         assert test.shape == shape
         assert test._tf.dtype == tf.complex128
         assert test._tf.shape == shape
-        assert_almost_equal(test.to_array(), list_dense)
+        assert_almost_equal(test.to_array(), _list_dense)
 
     @pytest.mark.parametrize('dtype', ['complex128',
                                        'float64',
                                        'int32', 'int64',
                                        'uint32'])
     def test_init_from_ndarray_other_dtype(self, shape, dtype):
-        numpy_dense = np.random.rand(*shape).astype(dtype, casting='unsafe')
+        _numpy_dense = np.random.rand(*shape).astype(dtype, casting='unsafe')
         test = DenseTensor(numpy_dense)
         assert test.shape == shape
         assert test._tf.dtype == tf.complex128
