@@ -1,6 +1,7 @@
 import warnings
 import qutip
 import numbers
+qutip.settings.core["auto_tidyup"] = False
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -105,3 +106,15 @@ class DenseTensor(qutip.core.data.Data):
 
     def trace(self):
         return tf.linalg.trace(self._tf).numpy()
+
+    @classmethod
+    def _fast_constructor(cls, data, shape):
+        """
+        A fast low-level constructor for wrapping an existing Tensor array in a
+        DenseTensor oject without copying it. The ``data`` argument must be a
+        Tensor array with the correct shape.
+        """
+        out = cls.__new__(cls)
+        super(cls, out).__init__(shape)
+        out._tf = data
+        return out
