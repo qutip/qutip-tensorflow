@@ -498,3 +498,30 @@ class TestSub(BinaryOpMixin):
     specialisations = [
         pytest.param(data.sub_DenseTensor, DenseTensor, DenseTensor, DenseTensor),
     ]
+
+
+class TestAdjoint(UnaryOpMixin):
+    def op_numpy(self, matrix):
+        return np.conj(matrix.T)
+
+    specialisations = [
+        pytest.param(data.adjoint_DenseTensor, DenseTensor, DenseTensor),
+    ]
+
+
+class TestConj(UnaryOpMixin):
+    def op_numpy(self, matrix):
+        return np.conj(matrix)
+
+    specialisations = [
+        pytest.param(data.conj_DenseTensor, DenseTensor, DenseTensor),
+    ]
+
+
+class TestTranspose(UnaryOpMixin):
+    def op_numpy(self, matrix):
+        return matrix.T
+
+    specialisations = [
+        pytest.param(data.transpose_DenseTensor, DenseTensor, DenseTensor),
+    ]
