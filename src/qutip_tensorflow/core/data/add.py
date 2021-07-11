@@ -1,23 +1,31 @@
-import qutip as qt
+import qutip
 from .dense_tensor import DenseTensor
+import warnings
 
-__all__ = ['add', 'add_DenseTensor', 'sub', 'sub_DenseTensor']
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from tensorflow.errors import InvalidArgumentError
+
+__all__ = ['add_DenseTensor', 'sub_DenseTensor']
 
 # Conversion function
 def add_DenseTensor(left, right, scale=1):
-    return DenseTensor(left._tf + scale*right._tf, copy=False)
+    if left.shape != right.shape:
+        raise ValueError(f"""Incompatible shapes for adition of two matrices:
+                         left={left.shape} and right={right.shape}""")
+    return DenseTensor(left._tf + scale*right._tf, shape=left.shape, copy=False)
 
 def sub_DenseTensor(left, right):
-    return DenseTensor(left._tf - right._tf, copy=False)
+    if left.shape != right.shape:
+        raise ValueError(f"""Incompatible shapes for adition of two matrices:
+                         left={left.shape} and right={right.shape}""")
+    return DenseTensor(left._tf - right._tf, shape=left.shape, copy=False)
 
 # `add_conversions` will register the data layer
-qt.data.add.add_specialisations([
+qutip.data.add.add_specialisations([
      (DenseTensor, DenseTensor, DenseTensor, add_DenseTensor),
 ])
 
-qt.data.sub.add_specialisations([
+qutip.data.sub.add_specialisations([
      (DenseTensor, DenseTensor, DenseTensor, sub_DenseTensor),
 ])
-
-add = qt.data.add
-sub = qt.data.sub
