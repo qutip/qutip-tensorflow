@@ -1,7 +1,11 @@
-import tensorflow as tf
-from tensorflow.errors import InvalidArgumentError
+import warnings
 import qutip
 import numbers
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    import tensorflow as tf
+    from tensorflow.errors import InvalidArgumentError
 
 __all__ = ["DenseTensor"]
 
