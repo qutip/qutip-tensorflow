@@ -1,6 +1,7 @@
 import warnings
 import qutip
 import numbers
+
 qutip.settings.core["auto_tidyup"] = False
 
 with warnings.catch_warnings():

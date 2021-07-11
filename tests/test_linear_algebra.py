@@ -51,7 +51,7 @@ def matrix(size, density):
 
 def change_dtype(A, dtype):
     """Changes a numpy matrix to tensorflow, scipy sparse or to a qutip.Data
-    specified by dtype"""
+    specified by dtype."""
     if dtype == np:
         return A
     elif dtype == tf:
@@ -64,8 +64,8 @@ def change_dtype(A, dtype):
 
 #Supported dtypes
 dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.DenseTensor]
-dtype_ids = ['numpy', 'tensorflow', 'scipy(CSR)', 'qutip(Dense)', 'qutip(CSR)',
-            'qutip(DenseTensor)']
+dtype_ids = ['numpy', 'tensorflow', 'scipy_CSR', 'qutip_Dense', 'qutip_CSR',
+            'qutip_DenseTensor']
 @pytest.fixture(params = dtype_list, ids=dtype_ids)
 def dtype(request): return request.param
 

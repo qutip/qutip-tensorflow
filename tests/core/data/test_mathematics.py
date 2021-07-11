@@ -16,6 +16,7 @@ _ParameterSet = type(pytest.param())
 # First set up a bunch of allowable shapes, for different types of functions so
 # we don't have to respecify a whole lot of things on repeat.
 
+
 def shapes_unary(dim=100):
     """Base shapes to test for unary functions."""
     # Be sure to test a full spectrum bra-type, ket-type and square and
@@ -117,10 +118,8 @@ def shapes_binary_bad_matmul(dim=100):
 # getting just a single case from each.
 _ALL_CASES = {
     DenseTensor: lambda shape: [lambda: conftest.random_DenseTensor(shape)],
-             }
-_RANDOM = {
-    DenseTensor: lambda shape: [lambda: conftest.random_DenseTensor(shape)]
 }
+_RANDOM = {DenseTensor: lambda shape: [lambda: conftest.random_DenseTensor(shape)]}
 
 
 def cases_type_shape_product(cases_lookup, op, types, shapes, out_type=None):
@@ -177,6 +176,7 @@ def cases_type_shape_product(cases_lookup, op, types, shapes, out_type=None):
         shape.  `out_type` is present in the output only if it were given as a
         parameter itself.
     """
+
     def case(type_, shape_case, generator_case):
         """
         Build a case parameter for _one_ generator function which will return
@@ -185,7 +185,7 @@ def cases_type_shape_product(cases_lookup, op, types, shapes, out_type=None):
         id_ = type_.__name__
         inner = ""
         for extra in [shape_case, generator_case]:
-            if hasattr(extra, 'id') and extra.id:
+            if hasattr(extra, "id") and extra.id:
                 inner += ("," if inner else "") + extra.id
         if inner:
             id_ += "[" + inner + "]"
@@ -201,8 +201,10 @@ def cases_type_shape_product(cases_lookup, op, types, shapes, out_type=None):
         # Convert the list of types into a list of lists of the special cases
         # needed for each type.
         matrix_cases = [
-            [case(type_, shape_case, type_case)
-             for type_case in cases_lookup[type_](shape_case.values[0])]
+            [
+                case(type_, shape_case, type_case)
+                for type_case in cases_lookup[type_](shape_case.values[0])
+            ]
             for type_, shape_case in zip(types, shapes_)
         ]
         # Now Cartesian product all the special cases together to make the full
@@ -226,6 +228,7 @@ def cases_type_shape_product(cases_lookup, op, types, shapes, out_type=None):
 # will collect for us, and "generate_<x>" a method which will be called by
 # `pytest_generate_tests` in order to generate all the parametrisations for the
 # given test.
+
 
 class _GenericOpMixin:
     """
@@ -268,7 +271,10 @@ class _GenericOpMixin:
             add(CSR, Dense) -> Other
         would be specified as `(add, CSR, Dense, Other)`.
     """
-    def op_numpy(self, *args): raise NotImplementedError
+
+    def op_numpy(self, *args):
+        raise NotImplementedError
+
     # With dimensions of around 100, we have to account for floating-point
     # addition not being associative; the maths on full numpy arrays will often
     # produce slightly different results to sparse algebra, since the order of
@@ -280,10 +286,9 @@ class _GenericOpMixin:
 
     def generate_mathematically_correct(self, metafunc):
         parameters = (
-            ['op']
-            + [x for x in metafunc.fixturenames
-               if x.startswith("data_")]
-            + ['out_type']
+            ["op"]
+            + [x for x in metafunc.fixturenames if x.startswith("data_")]
+            + ["out_type"]
         )
         cases = []
         for p_op in self.specialisations:
@@ -293,21 +298,23 @@ class _GenericOpMixin:
         metafunc.parametrize(parameters, cases)
 
     def generate_incorrect_shape_raises(self, metafunc):
-        parameters = (
-            ['op']
-            + [x for x in metafunc.fixturenames
-               if x.startswith("data_")]
-        )
+        parameters = ["op"] + [
+            x for x in metafunc.fixturenames if x.startswith("data_")
+        ]
         if not self.bad_shapes:
-            reason = "".join([
-                "no shapes are 'incorrect' for ",
-                metafunc.cls.__name__,
-                "::",
-                metafunc.function.__name__,
-            ])
-            false_case = pytest.param(*([None]*len(parameters)),
-                                      marks=pytest.mark.skip(reason),
-                                      id="no test")
+            reason = "".join(
+                [
+                    "no shapes are 'incorrect' for ",
+                    metafunc.cls.__name__,
+                    "::",
+                    metafunc.function.__name__,
+                ]
+            )
+            false_case = pytest.param(
+                *([None] * len(parameters)),
+                marks=pytest.mark.skip(reason),
+                id="no test"
+            )
             metafunc.parametrize(parameters, [false_case])
             return
         cases = []
@@ -324,10 +331,7 @@ class _GenericOpMixin:
         # down on boilerplate, but also that derived classes _may_ override the
         # generation of tests defined in a base class, say if they have
         # additional special arguments that need parametrising over.
-        generator_name = (
-            "generate_"
-            + metafunc.function.__name__.replace("test_", "")
-        )
+        generator_name = "generate_" + metafunc.function.__name__.replace("test_", "")
         try:
             generator = getattr(self, generator_name)
         except AttributeError:
@@ -341,6 +345,7 @@ class UnaryOpMixin(_GenericOpMixin):
     negation).  Only generates the test `mathematically_correct`, since there
     can't be a shape mismatch when there's only one argument.
     """
+
     shapes = [(x,) for x in shapes_unary()]
 
     def test_mathematically_correct(self, op, data_m, out_type):
@@ -354,6 +359,7 @@ class UnaryOpMixin(_GenericOpMixin):
         else:
             assert abs(test - expected) < self.tol
 
+
 class UnaryScalarOpMixin(_GenericOpMixin):
     """
     Mix-in for unary mathematical operations on Data instances, but that also
@@ -361,13 +367,17 @@ class UnaryScalarOpMixin(_GenericOpMixin):
     the test `mathematically_correct`, since there can't be a shape mismatch
     when there's only one Data argument.
     """
+
     shapes = [(x,) for x in shapes_unary()]
 
-    @pytest.mark.parametrize('scalar', [
-        pytest.param(0, id='zero'),
-        pytest.param(4.5, id='real'),
-        pytest.param(3j, id='complex'),
-    ])
+    @pytest.mark.parametrize(
+        "scalar",
+        [
+            pytest.param(0, id="zero"),
+            pytest.param(4.5, id="real"),
+            pytest.param(3j, id="complex"),
+        ],
+    )
     def test_mathematically_correct(self, op, data_m, scalar, out_type):
         matrix = data_m()
         expected = self.op_numpy(matrix.to_array(), scalar)
@@ -385,6 +395,7 @@ class BinaryOpMixin(_GenericOpMixin):
     Mix-in for binary mathematical operations on Data instances (e.g. binary
     addition).
     """
+
     def test_mathematically_correct(self, op, data_l, data_r, out_type):
         """
         Test that the binary operation is mathematically correct for all the
@@ -414,17 +425,14 @@ class TernaryOpMixin(_GenericOpMixin):
     Mix-in for ternary mathematical operations on Data instances (e.g. inner
     product with an operator in the middle).  This is pretty rare.
     """
-    def test_mathematically_correct(self, op,
-                                    data_l, data_m, data_r,
-                                    out_type):
+
+    def test_mathematically_correct(self, op, data_l, data_m, data_r, out_type):
         """
         Test that the binary operation is mathematically correct for all the
         known type specialisations.
         """
         left, mid, right = data_l(), data_m(), data_r()
-        expected = self.op_numpy(left.to_array(),
-                                 mid.to_array(),
-                                 right.to_array())
+        expected = self.op_numpy(left.to_array(), mid.to_array(), right.to_array())
         test = op(left, mid, right)
         assert isinstance(test, out_type)
         if issubclass(out_type, Data):
@@ -444,6 +452,7 @@ class TernaryOpMixin(_GenericOpMixin):
 
 # And now finally we get into the meat of the actual mathematical tests.
 
+
 class TestAdd(BinaryOpMixin):
     def op_numpy(self, left, right, scale):
         return np.add(left, scale * right)
@@ -457,8 +466,9 @@ class TestAdd(BinaryOpMixin):
     # `add` has an additional scalar parameter, because the operation is
     # actually more like `A + c*B`.  We just parametrise that scalar
     # separately.
-    @pytest.mark.parametrize('scale', [None, 0.2, 0.5j],
-                             ids=['unscaled', 'scale[real]', 'scale[complex]'])
+    @pytest.mark.parametrize(
+        "scale", [None, 0.2, 0.5j], ids=["unscaled", "scale[real]", "scale[complex]"]
+    )
     def test_mathematically_correct(self, op, data_l, data_r, out_type, scale):
         """
         Test that the binary operation is mathematically correct for
