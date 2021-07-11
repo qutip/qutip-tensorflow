@@ -4,7 +4,7 @@ from tensorflow.errors import InvalidArgumentError
 import qutip
 import numbers
 
-__all__ = ['DenseTensor']
+__all__ = ["DenseTensor"]
 
 
 class DenseTensor(qutip.core.data.Data):
@@ -39,8 +39,10 @@ class DenseTensor(qutip.core.data.Data):
             try:
                 shape = data.shape
             except AttributeError:
-                raise ValueError("""Shape could not be inferred from data.
-                                 Please, include the shape of data.""")
+                raise ValueError(
+                    """Shape could not be inferred from data.
+                                 Please, include the shape of data."""
+                )
 
             if isinstance(shape, tf.TensorShape):
                 shape = tuple(shape.as_list())
@@ -59,20 +61,25 @@ class DenseTensor(qutip.core.data.Data):
             and shape[0] > 0
             and shape[1] > 0
         ):
-            raise ValueError("""Shape must be a 2-tuple of positive ints, but
-                             is """ + repr(shape))
+            raise ValueError(
+                """Shape must be a 2-tuple of positive ints, but
+                             is """
+                + repr(shape)
+            )
 
         super().__init__(shape)
 
         # Only reshape when needed as reshape always returns a copy of the input
         # Tensor.
-        if shape!=tuple(data.shape.as_list()):
+        if shape != tuple(data.shape.as_list()):
             try:
                 data = tf.reshape(data, shape)
             # We return ValueError to match what qutip returns.
             except InvalidArgumentError as e:
-                raise ValueError("""Shape of data must
-                                 match shape argument.""") from e
+                raise ValueError(
+                    """Shape of data must
+                                 match shape argument."""
+                ) from e
         if copy:
             self._tf = tf.identity(data)
         else:
