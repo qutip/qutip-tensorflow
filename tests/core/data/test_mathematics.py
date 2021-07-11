@@ -498,3 +498,32 @@ class TestSub(BinaryOpMixin):
     specialisations = [
         pytest.param(data.sub_DenseTensor, DenseTensor, DenseTensor, DenseTensor),
     ]
+
+
+class TestMatmul(BinaryOpMixin):
+    def op_numpy(self, left, right):
+        return np.matmul(left, right)
+
+    shapes = shapes_binary_matmul()
+    bad_shapes = shapes_binary_bad_matmul()
+    specialisations = [
+        pytest.param(data.matmul_DenseTensor, DenseTensor, DenseTensor, DenseTensor),
+    ]
+
+
+class TestMul(UnaryScalarOpMixin):
+    def op_numpy(self, matrix, scalar):
+        return scalar * matrix
+
+    specialisations = [
+        pytest.param(data.mul_DenseTensor, DenseTensor, DenseTensor),
+    ]
+
+
+class TestNeg(UnaryOpMixin):
+    def op_numpy(self, matrix):
+        return -matrix
+
+    specialisations = [
+        pytest.param(data.neg_DenseTensor, DenseTensor, DenseTensor),
+    ]
