@@ -8,21 +8,22 @@ __all__ = ['DenseTensor']
 
 
 class DenseTensor(qutip.core.data.Data):
-    """This class provide a wraps around TensorFlow's Tensor. IT will store data
+    """This class provide a wraps around TensorFlow's Tensor. It will store data
     as a Tensor of dtype `tf.complex128`. Data will be expanded into a 2D
     Tensor.
 
     Parameters
     ----------
     data: array-like
-        Data to be stored.
+        Data to be stored. Accepts same array-like as tensorflow.constant.
     shape: (int, int)
         Shape of data. Default `None`, it tries to infer the shape from data
         accessing the attribute `data.shape`.
     copy: bool
         If `True` (default) then the object is copied. Otherwise, copy will only
-        be made if tf.constant returns a copy of data or if a copy is needed to
-        satisfy dtype (tf.complex128) and shape (2D Tensor)."""
+        be made if tf.constant returns a copy of data(when input is not a
+        `Tenor`) or if a copy is needed to satisfy dtype (tf.complex128) and
+        shape (2D Tensor)."""
 
     def __init__(self, data, shape=None, copy=False):
         # If the input is a tensor this does not copy it. Otherwise it will

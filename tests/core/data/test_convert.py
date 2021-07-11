@@ -14,7 +14,6 @@ _dense_tensor = DenseTensor(random_tensor_dense((2,2)))
     pytest.param(_dense_tensor, DenseTensor, id='DenseTensor'),
 ])
 def test_create(base, dtype):
-    # The test of exactitude is done in test_csr, test_dense.
     created = qutip.data.create(base)
     assert isinstance(created, dtype)
 
