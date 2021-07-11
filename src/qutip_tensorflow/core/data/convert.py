@@ -1,33 +1,33 @@
-import qutip as qt
+import qutip
 from .dense_tensor import DenseTensor
 import tensorflow as tf
-
-__all__ = ['to']
 
 # Conversion function
 def _tf_from_dense(dense):
     return DenseTensor(dense.to_array())
 
+
 def _tf_to_dense(tftensor):
-    return qt.data.Dense(tftensor.to_array(), copy=False)
+    return qutip.data.Dense(tftensor.to_array(), copy=False)
+
 
 def is_tftensor(data):
     return isinstance(data, tf.Tensor)
 
-# `add_conversions` will register the data layer
-qt.data.to.add_conversions([
-     (DenseTensor, qt.data.Dense, _tf_from_dense),
-     (qt.data.Dense, DenseTensor, _tf_to_dense),
-])
 
-# You can add user friendly name for conversion with `to` or Qobj creation functions:
-qt.data.to.register_aliases(['tftensor'], DenseTensor)
-qt.data.to.register_aliases(['DenseTensor'], DenseTensor)
+# Register the data layer
+qutip.data.to.add_conversions(
+    [
+        (DenseTensor, qutip.data.Dense, _tf_from_dense),
+        (qutip.data.Dense, DenseTensor, _tf_to_dense),
+    ]
+)
 
-qt.data.create.add_creators([
-    (is_tftensor, DenseTensor, 85),
-])
+# User friendly name for conversion with `to` or Qobj creation functions:
+qutip.data.to.register_aliases(["tftensor", "DenseTensor"], DenseTensor)
 
-to = qt.data.to
-create = qt.data.create
-
+qutip.data.create.add_creators(
+    [
+        (is_tftensor, DenseTensor, 85),
+    ]
+)
