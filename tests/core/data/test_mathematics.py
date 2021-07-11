@@ -498,3 +498,28 @@ class TestSub(BinaryOpMixin):
     specialisations = [
         pytest.param(data.sub_DenseTensor, DenseTensor, DenseTensor, DenseTensor),
     ]
+
+class TestTrace(UnaryOpMixin):
+    def op_numpy(self, matrix):
+        return np.sum(np.diag(matrix))
+
+    shapes = [
+        (pytest.param((1, 1), id="1"),),
+        (pytest.param((100, 100), id="100"),),
+    ]
+    bad_shapes = [
+        (x,) for x in shapes_unary() if x.values[0][0] != x.values[0][1]
+    ]
+    specialisations = [
+        pytest.param(data.trace_DenseTensor, DenseTensor, complex),
+    ]
+
+    # Trace actually does have bad shape, so we put that in too.
+    def test_incorrect_shape_raises(self, op, data_m):
+        """
+        Test that the operation produces a suitable error if the shape is not a
+        square matrix.
+        """
+        with pytest.raises(ValueError):
+            op(data_m())
+
