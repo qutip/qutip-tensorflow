@@ -35,20 +35,12 @@ class TfTensor(qutip.core.data.Data):
 
         # Try to inherit shape from data and expand shape
         if shape is None:
-            try:
-                shape = data.shape
-            except AttributeError:
-                raise ValueError(
-                    """Shape could not be inferred from data.
-                                 Please, include the shape of data."""
-                )
-
-            if isinstance(shape, tf.TensorShape):
-                shape = tuple(shape.as_list())
+            shape = tuple(data.shape.as_list())
 
             if len(shape) == 0:
                 shape = (1, 1)
-                # Promote to a ket by default if passed 1D data.
+
+            # Promote to a ket by default if passed 1D data.
             if len(shape) == 1:
                 shape = (shape[0], 1)
 
@@ -74,6 +66,7 @@ class TfTensor(qutip.core.data.Data):
             # We return ValueError to match what qutip returns.
             except InvalidArgumentError as e:
                 raise ValueError("""Shape of data must match shape argument.""") from e
+
         if copy:
             self._tf = tf.identity(data)
         else:
