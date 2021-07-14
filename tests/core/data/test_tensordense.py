@@ -139,6 +139,7 @@ class TestClassMethods:
             pytest.param((-1, 1), id="negative_shape"),
             pytest.param((-4, -4), id="both_negative_shape"),
             pytest.param((1213, 1217), id="differen_shape"),
+            pytest.param((10, 10), id="wrong_shape"),
         ],
     )
     def test_init_from_wrong_shape(self, data, shape):
