@@ -8,13 +8,13 @@ __all__ = ["TfTensor"]
 
 class TfTensor(qutip.core.data.Data):
     """This class provide a wraps around TensorFlow's Tensor. It will store data
-    as a Tensor of dtype `tensorflow.complex128`. Data will be expanded into a 2D
+    as a Tensor of dtype ``tensorflow.complex128``. Data will be expanded into a 2D
     Tensor.
 
     Parameters
     ----------
     data: array-like
-        Data to be stored. Accepts same array-like as `tensorflow.constant`.
+        Data to be stored. Accepts same array-like as ``tensorflow.constant``.
     shape: (int, int)
         Shape of data. Default `None`, it tries to infer the shape from data
         accessing the attribute `data.shape`.
