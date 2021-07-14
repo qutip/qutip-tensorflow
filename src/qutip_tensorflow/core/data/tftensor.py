@@ -19,10 +19,10 @@ class TfTensor(qutip.core.data.Data):
         Shape of data. Default `None`, it tries to infer the shape from data
         accessing the attribute `data.shape`.
     copy: bool
-        If `True` (default) then the object is copied. Otherwise, copy will only
-        be made if tf.constant returns a copy of data(when input is not a
-        `Tenor`) or if a copy is needed to satisfy dtype (tensorflow.complex128) and
-        shape (2D Tensor)."""
+        Default ``False``. If ``True`` then the object is copied. Otherwise, a
+        copy will only be made if tf.constant returns a copy of data (when input
+        is not a `Tenor`) or if a copy is needed to satisfy dtype
+        (tensorflow.complex128) and shape (2D Tensor)."""
 
     def __init__(self, data, shape=None, copy=False):
         # If the input is a tensor this does not copy it. Otherwise it will
