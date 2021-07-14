@@ -1,2 +1,2 @@
 from .convert import *
-from .dense_tensor import *
+from .tftensor import *

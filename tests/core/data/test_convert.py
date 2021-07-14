@@ -2,19 +2,19 @@ import numpy as np
 import pytest
 import qutip
 import qutip_tensorflow as qtf
-from qutip_tensorflow.core.data import DenseTensor
+from qutip_tensorflow.core.data import TfTensor
 from qutip import data
 from .conftest import random_tensor_dense
 
 
-_dense_tensor = DenseTensor(random_tensor_dense((2, 2)))
+_dense_tensor = TfTensor(random_tensor_dense((2, 2)))
 
 
 @pytest.mark.parametrize(
     ["base", "dtype"],
     [
-        pytest.param(random_tensor_dense((2, 2)), DenseTensor, id="Tensor"),
-        pytest.param(_dense_tensor, DenseTensor, id="DenseTensor"),
+        pytest.param(random_tensor_dense((2, 2)), TfTensor, id="Tensor"),
+        pytest.param(_dense_tensor, TfTensor, id="TfTensor"),
     ],
 )
 def test_create(base, dtype):
@@ -26,8 +26,8 @@ def test_create(base, dtype):
     ["from_", "base"],
     [
         pytest.param("tftensor", _dense_tensor, id="from tensorflow str"),
-        pytest.param("DenseTensor", _dense_tensor, id="from DenseTensor str"),
-        pytest.param(DenseTensor, _dense_tensor, id="from DenseTensor type"),
+        pytest.param("TfTensor", _dense_tensor, id="from TfTensor str"),
+        pytest.param(TfTensor, _dense_tensor, id="from TfTensor type"),
     ],
 )
 @pytest.mark.parametrize(
@@ -39,9 +39,9 @@ def test_create(base, dtype):
         pytest.param("csr", data.CSR, id="to CSR str"),
         pytest.param("CSR", data.CSR, id="to CSR STR"),
         pytest.param(data.CSR, data.CSR, id="to CSR type"),
-        pytest.param("tftensor", DenseTensor, id="to tensorflow str"),
-        pytest.param("DenseTensor", DenseTensor, id="to tensorflow str_type"),
-        pytest.param(DenseTensor, DenseTensor, id="to tensorflow type"),
+        pytest.param("tftensor", TfTensor, id="to tensorflow str"),
+        pytest.param("TfTensor", TfTensor, id="to tensorflow str_type"),
+        pytest.param(TfTensor, TfTensor, id="to tensorflow type"),
     ],
 )
 def test_converters_qtf_to_qt(from_, base, to_, dtype):
@@ -66,9 +66,9 @@ def test_converters_qtf_to_qt(from_, base, to_, dtype):
 @pytest.mark.parametrize(
     ["to_", "dtype"],
     [
-        pytest.param("tftensor", DenseTensor, id="to tensorflow str"),
-        pytest.param("DenseTensor", DenseTensor, id="to tensorflow str_type"),
-        pytest.param(DenseTensor, DenseTensor, id="to tensorflow type"),
+        pytest.param("tftensor", TfTensor, id="to tensorflow str"),
+        pytest.param("TfTensor", TfTensor, id="to tensorflow str_type"),
+        pytest.param(TfTensor, TfTensor, id="to tensorflow type"),
     ],
 )
 def test_converters_qt_to_qtf(from_, base, to_, dtype):

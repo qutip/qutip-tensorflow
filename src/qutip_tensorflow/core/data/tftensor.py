@@ -3,25 +3,25 @@ from tensorflow.errors import InvalidArgumentError
 import qutip
 import numbers
 
-__all__ = ["DenseTensor"]
+__all__ = ["TfTensor"]
 
 
-class DenseTensor(qutip.core.data.Data):
+class TfTensor(qutip.core.data.Data):
     """This class provide a wraps around TensorFlow's Tensor. It will store data
-    as a Tensor of dtype `tf.complex128`. Data will be expanded into a 2D
+    as a Tensor of dtype `tensorflow.complex128`. Data will be expanded into a 2D
     Tensor.
 
     Parameters
     ----------
     data: array-like
-        Data to be stored. Accepts same array-like as tensorflow.constant.
+        Data to be stored. Accepts same array-like as `tensorflow.constant`.
     shape: (int, int)
         Shape of data. Default `None`, it tries to infer the shape from data
         accessing the attribute `data.shape`.
     copy: bool
         If `True` (default) then the object is copied. Otherwise, copy will only
         be made if tf.constant returns a copy of data(when input is not a
-        `Tenor`) or if a copy is needed to satisfy dtype (tf.complex128) and
+        `Tenor`) or if a copy is needed to satisfy dtype (tensorflow.complex128) and
         shape (2D Tensor)."""
 
     def __init__(self, data, shape=None, copy=False):
@@ -61,9 +61,7 @@ class DenseTensor(qutip.core.data.Data):
             and shape[1] > 0
         ):
             raise ValueError(
-                """Shape must be a 2-tuple of positive ints, but
-                             is """
-                + repr(shape)
+                """Shape must be a 2-tuple of positive ints, but is """ + repr(shape)
             )
 
         super().__init__(shape)
@@ -75,29 +73,26 @@ class DenseTensor(qutip.core.data.Data):
                 data = tf.reshape(data, shape)
             # We return ValueError to match what qutip returns.
             except InvalidArgumentError as e:
-                raise ValueError(
-                    """Shape of data must
-                                 match shape argument."""
-                ) from e
+                raise ValueError("""Shape of data must match shape argument.""") from e
         if copy:
             self._tf = tf.identity(data)
         else:
             self._tf = data
 
     def copy(self):
-        return DenseTensor(self._tf, shape=self.shape, copy=True)
+        return TfTensor(self._tf, shape=self.shape, copy=True)
 
     def to_array(self):
         return self._tf.numpy()
 
     def conj(self):
-        return DenseTensor(tf.math.conj(self._tf))
+        return TfTensor(tf.math.conj(self._tf))
 
     def transpose(self):
-        return DenseTensor(tf.transpose(self._tf))
+        return TfTensor(tf.transpose(self._tf))
 
     def adjoint(self):
-        return DenseTensor(tf.linalg.adjoint(self._tf))
+        return TfTensor(tf.linalg.adjoint(self._tf))
 
     def trace(self):
         return tf.linalg.trace(self._tf).numpy()
