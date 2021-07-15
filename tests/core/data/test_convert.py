@@ -72,7 +72,6 @@ def test_converters_qtf_to_qt(from_, base, to_, dtype):
     ],
 )
 def test_converters_qt_to_qtf(from_, base, to_, dtype):
-    print(base)
     converter = data.to[to_, from_]
     assert isinstance(converter(base), dtype)
     converter = data.to[to_]

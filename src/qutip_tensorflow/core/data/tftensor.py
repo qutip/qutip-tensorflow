@@ -33,7 +33,7 @@ class TfTensor(qutip.core.data.Data):
         # return a copy
         data = tf.cast(data, tf.complex128)
 
-        # Try to inherit shape from data and expand shape
+        # Inherit shape from data and expand shape
         if shape is None:
             shape = tuple(data.shape.as_list())
 
