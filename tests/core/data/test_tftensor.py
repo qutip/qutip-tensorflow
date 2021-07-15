@@ -78,6 +78,8 @@ class TestClassMethods:
         assert np.all(test.to_array() == numpy_dense)
 
     def test_init_from_tensor(self, tensor_dense):
+        """Test that initialization from tensor with default arguments works.
+        (by default we do not copy the tensor)."""
         test = TfTensor(tensor_dense)
         assert test.shape == tuple(tensor_dense.shape.as_list())
         assert np.all(test.to_array() == tensor_dense)
@@ -149,6 +151,19 @@ class TestClassMethods:
         """
         with pytest.raises(ValueError):
             TfTensor(data, shape)
+
+    @pytest.mark.parametrize("copy", [True, False])
+    def test_init_copy(self, copy, tensor_dense):
+        """Test that copy argument in __init__ work as intended."""
+        test = TfTensor(tensor_dense, copy=copy)
+        assert test.shape == tuple(tensor_dense.shape.as_list())
+        assert np.all(test.to_array() == tensor_dense)
+
+        # by default we do not return a copy
+        if copy:
+            assert test._tf is not tensor_dense
+        else:
+            assert test._tf is tensor_dense
 
     def test_copy_returns_a_correct_copy(self, data_tensor_dense):
         """
