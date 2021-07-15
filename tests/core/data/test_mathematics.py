@@ -2,7 +2,7 @@ import itertools
 import numpy as np
 import pytest
 
-from qutip_tensorflow.core.data import DenseTensor
+from qutip_tensorflow.core.data import TfTensor
 from qutip_tensorflow import data
 from qutip.core.data import Data, Dense, CSR
 
@@ -117,9 +117,9 @@ def shapes_binary_bad_matmul(dim=100):
 # _ALL_CASES is for getting all the special cases to test, _RANDOM is for
 # getting just a single case from each.
 _ALL_CASES = {
-    DenseTensor: lambda shape: [lambda: conftest.random_DenseTensor(shape)],
+    TfTensor: lambda shape: [lambda: conftest.random_tftensor(shape)],
 }
-_RANDOM = {DenseTensor: lambda shape: [lambda: conftest.random_DenseTensor(shape)]}
+_RANDOM = {TfTensor: lambda shape: [lambda: conftest.random_tftensor(shape)]}
 
 
 def cases_type_shape_product(cases_lookup, op, types, shapes, out_type=None):
@@ -460,7 +460,7 @@ class TestAdd(BinaryOpMixin):
     shapes = shapes_binary_identical()
     bad_shapes = shapes_binary_bad_identical()
     specialisations = [
-        pytest.param(data.add_DenseTensor, DenseTensor, DenseTensor, DenseTensor),
+        pytest.param(data.add_tftensor, TfTensor, TfTensor, TfTensor),
     ]
 
     # `add` has an additional scalar parameter, because the operation is
@@ -472,7 +472,7 @@ class TestAdd(BinaryOpMixin):
     def test_mathematically_correct(self, op, data_l, data_r, out_type, scale):
         """
         Test that the binary operation is mathematically correct for
-        qutip_tensflows add funtion.
+        qutip-tensorflow's add function.
         """
         left, right = data_l(), data_r()
         if scale is not None:
@@ -496,5 +496,5 @@ class TestSub(BinaryOpMixin):
     shapes = shapes_binary_identical()
     bad_shapes = shapes_binary_bad_identical()
     specialisations = [
-        pytest.param(data.sub_DenseTensor, DenseTensor, DenseTensor, DenseTensor),
+        pytest.param(data.sub_tftensor, TfTensor, TfTensor, TfTensor),
     ]

@@ -1,10 +1,10 @@
 import qutip
-from .dense_tensor import DenseTensor
+from .tftensor import TfTensor
 import tensorflow as tf
 
 # Conversion function
 def _tf_from_dense(dense):
-    return DenseTensor(dense.to_array())
+    return TfTensor(dense.to_array())
 
 
 def _tf_to_dense(tftensor):
@@ -18,16 +18,16 @@ def is_tftensor(data):
 # Register the data layer
 qutip.data.to.add_conversions(
     [
-        (DenseTensor, qutip.data.Dense, _tf_from_dense),
-        (qutip.data.Dense, DenseTensor, _tf_to_dense),
+        (TfTensor, qutip.data.Dense, _tf_from_dense),
+        (qutip.data.Dense, TfTensor, _tf_to_dense),
     ]
 )
 
 # User friendly name for conversion with `to` or Qobj creation functions:
-qutip.data.to.register_aliases(["tftensor", "DenseTensor"], DenseTensor)
+qutip.data.to.register_aliases(["tftensor", "TfTensor"], TfTensor)
 
 qutip.data.create.add_creators(
     [
-        (is_tftensor, DenseTensor, 85),
+        (is_tftensor, TfTensor, 85),
     ]
 )

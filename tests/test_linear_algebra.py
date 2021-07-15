@@ -63,9 +63,9 @@ def change_dtype(A, dtype):
         return A.to(dtype)
 
 #Supported dtypes
-dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.DenseTensor]
+dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.TfTensor]
 dtype_ids = ['numpy', 'tensorflow', 'scipy_CSR', 'qutip_Dense', 'qutip_CSR',
-            'qutip_DenseTensor']
+            'qutip_TfTensor']
 @pytest.fixture(params = dtype_list, ids=dtype_ids)
 def dtype(request): return request.param
 

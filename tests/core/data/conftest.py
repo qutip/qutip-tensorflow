@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 import scipy.sparse
 import qutip
-from qutip_tensorflow.core.data import DenseTensor
+from qutip_tensorflow.core.data import TfTensor
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -65,9 +65,9 @@ def random_tensor_dense(shape):
     return out
 
 
-def random_DenseTensor(shape):
-    """Generate a random DenseTensor matrix with the given shape."""
-    return DenseTensor(random_tensor_dense(shape))
+def random_tftensor(shape):
+    """Generate a random TfTensor matrix with the given shape."""
+    return TfTensor(random_tensor_dense(shape))
 
 
 def random_dense(shape, fortran):
