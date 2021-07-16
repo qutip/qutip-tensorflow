@@ -1,14 +1,12 @@
 import warnings
 
 import numpy as np
-import scipy.sparse
 import qutip
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import tensorflow as tf
 
 from qutip_tensorflow.core.data import TfTensor
-
 
 
 def random_numpy_dense(shape, fortran):
