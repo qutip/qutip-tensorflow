@@ -27,6 +27,10 @@ def add_tftensor(left, right, scale=1):
         )
 
 def iadd_tftensor(left, right, scale=1):
+    """This function performs an in-place addition. However, TensorFlow returns
+    a new object after a mathematical operation. This means that in-place here
+    only serves to avoid the creation of a TfTensor instance. We do not have
+    any control over the memory where the Tensor is stored."""
     _check_shape(left, right)
 
     # If scale=1 we obtain a x2 speed-up if we do not multiply by the scale.
