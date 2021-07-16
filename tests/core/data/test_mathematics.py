@@ -52,49 +52,6 @@ def shapes_binary_bad_identical(dim=100):
     ]
 
 
-def shapes_binary_unrestricted(dim=100):
-    """
-    Allowed shapes for binary operators which can take any shapes, e.g. the
-    Kronecker product.
-    """
-    return list(itertools.product(shapes_unary(dim), repeat=2))
-
-
-def shapes_binary_bad_unrestricted(dim=100):
-    """
-    Disallowed shapes for binary operators which can take any shapes, e.g. the
-    Kronecker product.  There aren't actually any of these, but we keep it just
-    for consistency.
-    """
-    return []
-
-
-def shapes_binary_matmul(dim=100):
-    """
-    Allowed shapes for "matmul"-like operators that require that the "inner"
-    two indices are equal, i.e. the columns on the left equal the rows on the
-    right.
-    """
-    return [
-        (x, y)
-        for x, y in itertools.product(shapes_unary(dim), repeat=2)
-        if x.values[0][1] == y.values[0][0]
-    ]
-
-
-def shapes_binary_bad_matmul(dim=100):
-    """
-    Disallowed shapes for "matmul"-like operators that require that the "inner"
-    two indices are equal, i.e. the columns on the left equal the rows on the
-    right.
-    """
-    return [
-        (x, y)
-        for x, y in itertools.product(shapes_unary(dim), repeat=2)
-        if x.values[0][1] != y.values[0][0]
-    ]
-
-
 # Set up the special cases for each type of matrix that will be tested.  These
 # should be kept low, because mathematical operations will test a Cartesian
 # product of all the cases of the same order as the operation, which can get
@@ -260,8 +217,6 @@ class _GenericOpMixin:
         A list of the sets of shapes which should be used for the tests of
         mathematical correctness.  Each element of the list is a set of shapes,
         each one corresponding to one of the arguments of the operation.
-
-    bad_shapes: list of (list of shapes)
         Similar to `shapes`, but these should be shapes which are invalid for
         the given mathematical operation.
 
@@ -339,57 +294,6 @@ class _GenericOpMixin:
         generator(metafunc)
 
 
-class UnaryOpMixin(_GenericOpMixin):
-    """
-    Mix-in for unary mathematical operations on Data instances (e.g. unary
-    negation).  Only generates the test `mathematically_correct`, since there
-    can't be a shape mismatch when there's only one argument.
-    """
-
-    shapes = [(x,) for x in shapes_unary()]
-
-    def test_mathematically_correct(self, op, data_m, out_type):
-        matrix = data_m()
-        expected = self.op_numpy(matrix.to_array())
-        test = op(matrix)
-        assert isinstance(test, out_type)
-        if issubclass(out_type, Data):
-            assert test.shape == expected.shape
-            np.testing.assert_allclose(test.to_array(), expected, self.tol)
-        else:
-            assert abs(test - expected) < self.tol
-
-
-class UnaryScalarOpMixin(_GenericOpMixin):
-    """
-    Mix-in for unary mathematical operations on Data instances, but that also
-    take in a numeric scalar (e.g. scalar multiplication).  Only generates
-    the test `mathematically_correct`, since there can't be a shape mismatch
-    when there's only one Data argument.
-    """
-
-    shapes = [(x,) for x in shapes_unary()]
-
-    @pytest.mark.parametrize(
-        "scalar",
-        [
-            pytest.param(0, id="zero"),
-            pytest.param(4.5, id="real"),
-            pytest.param(3j, id="complex"),
-        ],
-    )
-    def test_mathematically_correct(self, op, data_m, scalar, out_type):
-        matrix = data_m()
-        expected = self.op_numpy(matrix.to_array(), scalar)
-        test = op(matrix, scalar)
-        assert isinstance(test, out_type)
-        if issubclass(out_type, Data):
-            assert test.shape == expected.shape
-            np.testing.assert_allclose(test.to_array(), expected, self.tol)
-        else:
-            assert abs(test - expected) < self.tol
-
-
 class BinaryOpMixin(_GenericOpMixin):
     """
     Mix-in for binary mathematical operations on Data instances (e.g. binary
@@ -418,36 +322,6 @@ class BinaryOpMixin(_GenericOpMixin):
         """
         with pytest.raises(ValueError):
             op(data_l(), data_r())
-
-
-class TernaryOpMixin(_GenericOpMixin):
-    """
-    Mix-in for ternary mathematical operations on Data instances (e.g. inner
-    product with an operator in the middle).  This is pretty rare.
-    """
-
-    def test_mathematically_correct(self, op, data_l, data_m, data_r, out_type):
-        """
-        Test that the binary operation is mathematically correct for all the
-        known type specialisations.
-        """
-        left, mid, right = data_l(), data_m(), data_r()
-        expected = self.op_numpy(left.to_array(), mid.to_array(), right.to_array())
-        test = op(left, mid, right)
-        assert isinstance(test, out_type)
-        if issubclass(out_type, Data):
-            assert test.shape == expected.shape
-            np.testing.assert_allclose(test.to_array(), expected, self.tol)
-        else:
-            assert abs(test - expected) < self.tol
-
-    def test_incorrect_shape_raises(self, op, data_l, data_m, data_r):
-        """
-        Test that the operation produces a suitable error if the shapes of the
-        given operands are not compatible.
-        """
-        with pytest.raises(ValueError):
-            op(data_l(), data_m(), data_r())
 
 
 # And now finally we get into the meat of the actual mathematical tests.
