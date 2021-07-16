@@ -363,6 +363,42 @@ class TestAdd(BinaryOpMixin):
             assert abs(test - expected) < self.tol
 
 
+class TestIAdd(BinaryOpMixin):
+    def op_numpy(self, left, right, scale):
+        return np.add(left, scale * right)
+
+    shapes = shapes_binary_identical()
+    bad_shapes = shapes_binary_bad_identical()
+    specialisations = [
+        pytest.param(data.iadd_tftensor, TfTensor, TfTensor, TfTensor),
+    ]
+
+    # `add` has an additional scalar parameter, because the operation is
+    # actually more like `A + c*B`.  We just parametrise that scalar
+    # separately.
+    @pytest.mark.parametrize(
+        "scale", [None, 0.2, 0.5j], ids=["unscaled", "scale[real]", "scale[complex]"]
+    )
+    def test_mathematically_correct(self, op, data_l, data_r, out_type, scale):
+        """
+        Test that the binary operation is mathematically correct for
+        qutip-tensorflow's add function.
+        """
+        left, right = data_l(), data_r()
+        if scale is not None:
+            expected = self.op_numpy(left.to_array(), right.to_array(), scale)
+            test = op(left, right, scale)
+        else:
+            expected = self.op_numpy(left.to_array(), right.to_array(), 1)
+            test = op(left, right)
+        assert isinstance(test, out_type)
+        if issubclass(out_type, Data):
+            assert test.shape == expected.shape
+            np.testing.assert_allclose(test.to_array(), expected, self.tol)
+        else:
+            assert abs(test - expected) < self.tol
+
+
 class TestSub(BinaryOpMixin):
     def op_numpy(self, left, right):
         return left - right
