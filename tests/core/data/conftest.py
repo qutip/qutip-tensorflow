@@ -27,8 +27,3 @@ def random_tensor_dense(shape):
 def random_tftensor(shape):
     """Generate a random TfTensor matrix with the given shape."""
     return TfTensor(random_tensor_dense(shape))
-
-
-def random_dense(shape, fortran):
-    """Generate a random qutip Dense matrix of the given shape."""
-    return qutip.core.data.Dense(random_numpy_dense(shape, fortran))
