@@ -3,14 +3,16 @@ from .tftensor import TfTensor
 
 __all__ = ["mul_tftensor", "neg_tftensor", "imul_tftensor"]
 
+
 def imul_tftensor(matrix, value):
     """
     Performs the operation:
         ``out := value*matrix``
     where `value` is a complex scalar.
     """
-    matrix._tf =  matrix._tf*value
+    matrix._tf = matrix._tf * value
     return matrix
+
 
 def mul_tftensor(matrix, value):
     """
