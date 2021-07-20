@@ -25,3 +25,20 @@ class TestSub(testing.TestSub):
     specialisations = [
         pytest.param(data.sub_tftensor, TfTensor, TfTensor, TfTensor),
     ]
+
+class TestMul(testing.TestMul):
+    specialisations = [
+        pytest.param(data.mul_tftensor, TfTensor, TfTensor),
+        pytest.param(data.imul_tftensor, TfTensor, TfTensor),
+    ]
+
+class TestMatmul(testing.TestMatmul):
+    specialisations = [
+        pytest.param(data.matmul_tftensor, TfTensor, TfTensor, TfTensor),
+    ]
+
+
+class TestNeg(testing.TestNeg):
+    specialisations = [
+        pytest.param(data.neg_tftensor, TfTensor, TfTensor),
+    ]

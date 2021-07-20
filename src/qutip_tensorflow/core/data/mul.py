@@ -1,8 +1,16 @@
 import qutip
 from .tftensor import TfTensor
 
-__all__ = ["mul_tftensor", "neg_tftensor"]
+__all__ = ["mul_tftensor", "neg_tftensor", "imul_tftensor"]
 
+def imul_tftensor(matrix, value):
+    """
+    Performs the operation:
+        ``out := value*matrix``
+    where `value` is a complex scalar.
+    """
+    matrix._tf =  matrix._tf*value
+    return matrix
 
 def mul_tftensor(matrix, value):
     """
@@ -22,4 +30,5 @@ def neg_tftensor(matrix):
 
 
 qutip.data.mul.add_specialisations([(TfTensor, TfTensor, mul_tftensor)])
+qutip.data.imul.add_specialisations([(TfTensor, TfTensor, imul_tftensor)])
 qutip.data.neg.add_specialisations([(TfTensor, TfTensor, neg_tftensor)])
