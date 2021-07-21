@@ -9,10 +9,11 @@ import warnings
 from . import benchmark_unary
 from . import benchmark_binary
 
-
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import tensorflow as tf
+
+import qutip_tensorflow as qtf
 
 # Get functions from unary ops that stater with `get`
 unary_ops = [ getattr(benchmark_unary,_) for _ in dir(benchmark_unary) if _[:3]=="get"]
