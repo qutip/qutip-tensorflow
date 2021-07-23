@@ -3,6 +3,9 @@ from tensorflow.errors import InvalidArgumentError
 import qutip
 import numbers
 
+from .adjoint import transpose_tftensor, conj_tftensor, adjoint_tftensor
+
+
 __all__ = ["TfTensor"]
 
 
@@ -79,13 +82,13 @@ class TfTensor(qutip.core.data.Data):
         return self._tf.numpy()
 
     def conj(self):
-        return TfTensor(tf.math.conj(self._tf))
+        return conj_tftensor(self)
 
     def transpose(self):
-        return TfTensor(tf.transpose(self._tf))
+        return transpose_tftensor(self)
 
     def adjoint(self):
-        return TfTensor(tf.linalg.adjoint(self._tf))
+        return adjoint_tftensor(self)
 
     def trace(self):
         return tf.linalg.trace(self._tf).numpy()
