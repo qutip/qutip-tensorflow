@@ -25,3 +25,18 @@ class TestSub(testing.TestSub):
     specialisations = [
         pytest.param(data.sub_tftensor, TfTensor, TfTensor, TfTensor),
     ]
+
+class TestAdjoint(testing.TestAdjoint):
+    specialisations = [
+        pytest.param(data.adjoint_tftensor, TfTensor, TfTensor),
+    ]
+
+class TestConj(testing.TestConj):
+    specialisations = [
+        pytest.param(data.conj_tftensor, TfTensor, TfTensor),
+    ]
+
+class TestTranspose(testing.TestTranspose):
+    specialisations = [
+        pytest.param(data.transpose_tftensor, TfTensor, TfTensor),
+    ]
