@@ -17,3 +17,9 @@ def kron_tftensor(left, right):
         ]).to_dense(),
         shape=(left.shape[0]*right.shape[0], left.shape[1]*right.shape[1]),
     )
+
+qutip.data.kron.add_specialisations(
+    [
+        (TfTensor, TfTensor, TfTensor, kron_tftensor)
+    ]
+)
