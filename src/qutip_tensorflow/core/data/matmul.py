@@ -34,7 +34,7 @@ def matmul_tftensor(left, right, scale=1, out=None):
     Perform the operation
         ``out := scale * (left @ right) + out``
     where `left`, `right` and `out` are matrices.  `scale` is a complex scalar,
-    defaulting to 1. If `out` not gives is assumed to be 0.
+    defaulting to 1. If `out` is not given it is assumed to be 0.
     """
     _check_shape(left, right, out)
     shape = (left.shape[0], right.shape[1])
