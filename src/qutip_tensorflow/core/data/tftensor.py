@@ -21,7 +21,7 @@ class TfTensor(qutip.core.data.Data):
     copy: bool
         Default ``False``. If ``True`` then the object is copied. Otherwise, a
         copy will only be made if tf.constant returns a copy of data (when input
-        is not a `Tenor`) or if a copy is needed to satisfy dtype
+        is not a `Tensor`) or if a copy is needed to satisfy dtype
         (tensorflow.complex128) and shape (2D Tensor)."""
 
     def __init__(self, data, shape=None, copy=False):
