@@ -17,11 +17,13 @@ testing._ALL_CASES = {
 }
 testing._RANDOM = {TfTensor: lambda shape: [lambda: conftest.random_tftensor(shape)]}
 
+
 class TestAdd(testing.TestAdd):
     specialisations = [
         pytest.param(data.add_tftensor, TfTensor, TfTensor, TfTensor),
         pytest.param(data.iadd_tftensor, TfTensor, TfTensor, TfTensor),
     ]
+
 
 class TestSub(testing.TestSub):
     specialisations = [
@@ -47,4 +49,21 @@ class TestTrace(testing.TestTrace):
 class TestKron(testing.TestKron):
     specialisations = [
         pytest.param(data.kron_tftensor, TfTensor, TfTensor, TfTensor),
+
+class TestMul(testing.TestMul):
+    specialisations = [
+        pytest.param(data.mul_tftensor, TfTensor, TfTensor),
+        pytest.param(data.imul_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestMatmul(testing.TestMatmul):
+    specialisations = [
+        pytest.param(data.matmul_tftensor, TfTensor, TfTensor, TfTensor),
+    ]
+
+
+class TestNeg(testing.TestNeg):
+    specialisations = [
+        pytest.param(data.neg_tftensor, TfTensor, TfTensor),
     ]

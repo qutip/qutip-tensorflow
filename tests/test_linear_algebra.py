@@ -9,10 +9,11 @@ import warnings
 from . import benchmark_unary
 from . import benchmark_binary
 
-
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import tensorflow as tf
+
+import qutip_tensorflow as qtf
 
 # Get functions from unary ops that stater with `get`
 unary_ops = [ getattr(benchmark_unary,_) for _ in dir(benchmark_unary) if _[:3]=="get"]
@@ -62,8 +63,9 @@ def change_dtype(A, dtype):
         return A.to(dtype)
 
 #Supported dtypes
-dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR]
-dtype_ids = ['numpy', 'tensorflow', 'scipy(CSR)', 'qutip(Dense)', 'qutip(CSR)']
+dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.TfTensor]
+dtype_ids = ['numpy', 'tensorflow', 'scipy_csr', 'qutip_dense', 'qutip_csr',
+             'qutip_tftensor']
 @pytest.fixture(params = dtype_list, ids=dtype_ids)
 def dtype(request): return request.param
 
