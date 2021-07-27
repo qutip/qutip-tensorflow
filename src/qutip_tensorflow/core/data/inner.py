@@ -14,10 +14,9 @@ def _check_shape_inner(left, right):
     if (
         (left.shape[0] != 1 and left.shape[1] != 1)  # Check left shape has 1
         or right.shape[1] != 1  # Check right shape has 1
-        or (  # Check left and right shapes are compatible
-            (left.shape[0] != right.shape[0] and left.shape[1] != right.shape[1])
-            and (left.shape[0] != right.shape[1] and left.shape[1] != right.shape[0])
-        )
+        # Check left and right shapes are compatible
+        or (left.shape[0] != right.shape[0]
+            and left.shape[1] != right.shape[0])
     ):
         raise ValueError(
             "Incompatible matrix shapes for states: left "

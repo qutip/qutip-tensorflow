@@ -30,10 +30,12 @@ class TestSub(testing.TestSub):
         pytest.param(data.sub_tftensor, TfTensor, TfTensor, TfTensor),
     ]
 
+
 class TestInner(testing.TestInner):
     specialisations = [
         pytest.param(data.inner_tftensor, TfTensor, TfTensor, tf.Tensor),
     ]
+
 
 class TestInnerOp(testing.TestInnerOp):
     specialisations = [
@@ -41,14 +43,18 @@ class TestInnerOp(testing.TestInnerOp):
                      tf.Tensor),
     ]
 
+
 class TestTrace(testing.TestTrace):
     specialisations = [
         pytest.param(data.trace_tftensor, TfTensor, tf.Tensor),
     ]
 
+
 class TestKron(testing.TestKron):
     specialisations = [
         pytest.param(data.kron_tftensor, TfTensor, TfTensor, TfTensor),
+    ]
+
 
 class TestMul(testing.TestMul):
     specialisations = [
