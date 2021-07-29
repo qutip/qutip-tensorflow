@@ -7,6 +7,8 @@ from qutip_tensorflow import data
 from qutip.core.data import Data, Dense, CSR
 import qutip.tests.core.data.test_mathematics as testing
 
+import tensorflow as tf
+
 
 from . import conftest
 
@@ -26,6 +28,31 @@ class TestAdd(testing.TestAdd):
 class TestSub(testing.TestSub):
     specialisations = [
         pytest.param(data.sub_tftensor, TfTensor, TfTensor, TfTensor),
+    ]
+
+
+class TestInner(testing.TestInner):
+    specialisations = [
+        pytest.param(data.inner_tftensor, TfTensor, TfTensor, tf.Tensor),
+    ]
+
+
+class TestInnerOp(testing.TestInnerOp):
+    specialisations = [
+        pytest.param(data.inner_op_tftensor, TfTensor, TfTensor, TfTensor,
+                     tf.Tensor),
+    ]
+
+
+class TestTrace(testing.TestTrace):
+    specialisations = [
+        pytest.param(data.trace_tftensor, TfTensor, tf.Tensor),
+    ]
+
+
+class TestKron(testing.TestKron):
+    specialisations = [
+        pytest.param(data.kron_tftensor, TfTensor, TfTensor, TfTensor),
     ]
 
 
