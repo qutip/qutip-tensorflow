@@ -1,6 +1,5 @@
 import qutip
 from .tftensor import TfTensor
-from .matmul import matmul_tftensor
 import warnings
 
 with warnings.catch_warnings():
@@ -15,7 +14,7 @@ def pow_tftensor(matrix, n):
 
     if matrix.shape[0] != matrix.shape[1]:
         raise ValueError(
-            f"""Trace can only be performed in square matrix. This
+            f"""Pow can only be performed in square matrix. This
                          matrix has shape={matrix.shape}"""
         )
 

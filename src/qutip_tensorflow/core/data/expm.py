@@ -12,7 +12,7 @@ __all__ = ["expm_tftensor"]
 def expm_tftensor(matrix):
     if matrix.shape[0] != matrix.shape[1]:
         raise ValueError(
-            f"""Trace can only be performed in square matrix. This
+            f"""Expm can only be performed in square matrix. This
                          matrix has shape={matrix.shape}"""
         )
     return TfTensor._fast_constructor(tf.linalg.expm(matrix._tf), shape=matrix.shape)
