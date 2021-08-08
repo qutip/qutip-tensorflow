@@ -7,3 +7,6 @@ from .trace import *
 from .kron import *
 from .matmul import *
 from .mul import *
+from .expm import *
+from .project import *
+from .pow import *
