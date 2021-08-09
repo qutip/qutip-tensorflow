@@ -45,19 +45,7 @@ def expect_ket_tftensor(op, state):
 
 
 def expect_dm_tftensor(op, state):
-    """In order to perform this operation with O(N^2) multiplications/sums, we
-    reshape op into a batch of row vectors and state into a batch of column
-    vectors. In this way matrix multiplication only computes diagonal elements."""
-    shape = op.shape[0]  # op and state are square matrices
-
-    op = tf.reshape(op._tf, (shape, 1, shape))  # Row vectors.
-
-    # For state we first need to transpose such that reshape is done properly.
-    state = tf.transpose(state._tf)
-    state = tf.reshape(state, (shape, shape, 1))
-
-    # The trace is just the sum of the computed elements
-    return tf.reduce_sum(op @ state)
+    return tf.reduce_sum(op._tf * tf.transpose(state._tf))
 
 
 def expect_tftensor(op, state):
