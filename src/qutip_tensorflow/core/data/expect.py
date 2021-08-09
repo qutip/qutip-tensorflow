@@ -21,7 +21,7 @@ def _check_shape_expect(op, state):
         or op.shape[1] != state.shape[0]  # Not possible op@state
     ):
         raise ValueError(
-            f"incompatible matrix shapes for op {op.shape}" " and state {state.shape}"
+            f"incompatible matrix shapes for op {op.shape} and state {state.shape}"
         )
 
 
