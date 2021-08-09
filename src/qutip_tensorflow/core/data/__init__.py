@@ -8,3 +8,6 @@ from .kron import *
 from .matmul import *
 from .mul import *
 from .expect import *
+from .expm import *
+from .project import *
+from .pow import *

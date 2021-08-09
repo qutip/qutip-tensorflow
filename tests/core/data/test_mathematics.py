@@ -26,25 +26,25 @@ class TestSub(testing.TestSub):
     specialisations = [
         pytest.param(data.sub_tftensor, TfTensor, TfTensor, TfTensor),
     ]
-    
+
 
 class TestAdjoint(testing.TestAdjoint):
     specialisations = [
         pytest.param(data.adjoint_tftensor, TfTensor, TfTensor),
     ]
-    
+
 
 class TestConj(testing.TestConj):
     specialisations = [
         pytest.param(data.conj_tftensor, TfTensor, TfTensor),
     ]
-    
+
 
 class TestTranspose(testing.TestTranspose):
     specialisations = [
         pytest.param(data.transpose_tftensor, TfTensor, TfTensor),
     ]
-    
+
 
 class TestInner(testing.TestInner):
     specialisations = [
@@ -54,8 +54,7 @@ class TestInner(testing.TestInner):
 
 class TestInnerOp(testing.TestInnerOp):
     specialisations = [
-        pytest.param(data.inner_op_tftensor, TfTensor, TfTensor, TfTensor,
-                     tf.Tensor),
+        pytest.param(data.inner_op_tftensor, TfTensor, TfTensor, TfTensor, tf.Tensor),
     ]
 
 
@@ -99,4 +98,22 @@ class TestExpect(TestExpect):
 class TestExpectSuper(TestExpectSuper):
     specialisations = [
         pytest.param(data.expect_super_tftensor, TfTensor, TfTensor, tf.Tensor),
+    ]
+    
+      
+class TestExpm(testing.TestExpm):
+    specialisations = [
+        pytest.param(data.expm_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestPow(testing.TestPow):
+    specialisations = [
+        pytest.param(data.pow_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestProject(testing.TestProject):
+    specialisations = [
+        pytest.param(data.project_tftensor, TfTensor, TfTensor),
     ]
