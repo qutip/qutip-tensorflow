@@ -1,14 +1,11 @@
-import itertools
 import numpy as np
+import tensorflow as tf
 import pytest
 
 from qutip_tensorflow.core.data import TfTensor
 from qutip_tensorflow import data
-from qutip.core.data import Data, Dense, CSR
 import qutip.tests.core.data.test_mathematics as testing
-
-import tensorflow as tf
-
+from qutip.tests.core.data.test_expect import TestExpect, TestExpectSuper
 
 from . import conftest
 
@@ -90,4 +87,16 @@ class TestMatmul(testing.TestMatmul):
 class TestNeg(testing.TestNeg):
     specialisations = [
         pytest.param(data.neg_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestExpect(TestExpect):
+    specialisations = [
+        pytest.param(data.expect_tftensor, TfTensor, TfTensor, tf.Tensor),
+    ]
+
+
+class TestExpectSuper(TestExpectSuper):
+    specialisations = [
+        pytest.param(data.expect_super_tftensor, TfTensor, TfTensor, tf.Tensor),
     ]
