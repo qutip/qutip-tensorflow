@@ -7,3 +7,4 @@ from .trace import *
 from .kron import *
 from .matmul import *
 from .mul import *
+from .reshape import *

@@ -6,7 +6,10 @@ from qutip_tensorflow.core.data import TfTensor
 from qutip_tensorflow import data
 from qutip.core.data import Data, Dense, CSR
 import qutip.tests.core.data.test_mathematics as testing
-
+from qutip.tests.core.data.test_reshape import (TestReshape,
+                                                TestColumnStack,
+                                                TestColumnUnstack,
+                                                TestSplitColumns)
 import tensorflow as tf
 
 
@@ -90,4 +93,28 @@ class TestMatmul(testing.TestMatmul):
 class TestNeg(testing.TestNeg):
     specialisations = [
         pytest.param(data.neg_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestReshape(TestReshape):
+    specialisations = [
+        pytest.param(data.reshape_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestSplitColumns(TestSplitColumns):
+    specialisations = [
+        pytest.param(data.split_columns_tftensor, TfTensor, list),
+    ]
+
+
+class TestColumnUnstack(TestColumnUnstack):
+    specialisations = [
+        pytest.param(data.column_unstack_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestColumnStack(TestColumnStack):
+    specialisations = [
+        pytest.param(data.column_stack_tftensor, TfTensor, TfTensor),
     ]
