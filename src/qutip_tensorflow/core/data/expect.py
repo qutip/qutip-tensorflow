@@ -59,17 +59,14 @@ def expect_tftensor(op, state):
 
 
 def expect_super_tftensor(op, state):
-    """This is a naive implementation of expect_super that takes O(N^4)
-    operations. A more efficient implementation with O(N^3) operations is
-    possible."""
     _check_shape_super(op, state)
 
-    out = op._tf @ state._tf
-
     out_shape = int(sqrt(op.shape[0]))
-    out = tf.reshape(out, shape=(out_shape, out_shape))
 
-    return tf.linalg.trace(out)
+    op = tf.reshape(op._tf, shape=(out_shape, out_shape, out_shape, out_shape))
+    state = tf.reshape(state._tf, shape=(out_shape, out_shape))
+
+    return tf.einsum("iijk,jk->", op, state)
 
 
 qutip.data.expect.add_specialisations([(TfTensor, TfTensor, expect_tftensor)])
