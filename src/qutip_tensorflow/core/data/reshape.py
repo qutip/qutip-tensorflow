@@ -20,7 +20,7 @@ def _reshape_check_input(in_shape, out_shape):
     if out_shape[0] * out_shape[1] != in_shape[0] * in_shape[1]:
         raise ValueError(f"cannot reshape {in_shape} to {out_shape}.")
 
-    if out_shape[0] < 0 or out_shape[1] < 0:
+    if out_shape[0] < 1 or out_shape[1] < 1:
         raise ValueError("shape must be positive.")
 
 
