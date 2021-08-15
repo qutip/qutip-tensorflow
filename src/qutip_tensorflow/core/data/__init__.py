@@ -10,3 +10,4 @@ from .mul import *
 from .expm import *
 from .project import *
 from .pow import *
+from . import norm
