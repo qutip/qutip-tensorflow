@@ -34,7 +34,7 @@ def pow_tftensor(matrix, n):
     return TfTensor._fast_constructor(out, shape=matrix.shape)
 
 
-qutip.data.expm.add_specialisations(
+qutip.data.pow.add_specialisations(
     [
         (TfTensor, TfTensor, pow_tftensor),
     ]
