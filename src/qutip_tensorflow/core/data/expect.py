@@ -28,14 +28,14 @@ def _check_shape_expect(op, state):
 def _check_shape_super(op, state):
     if state.shape[1] != 1:
         raise ValueError(
-            "expected a column-stacked matrix but state input matrix"
-            + f"has shape {state.shape}"
+            "expected a column-stacked matrix but state input matrix "
+            f"has shape {state.shape}"
         )
     if op.shape[1] != state.shape[0]:
         raise ValueError(f"incompatible shapes op:{op.shape} and state:{state.shape}")
     if op.shape[0] != op.shape[1]:
         raise ValueError(
-            "Expect_super only works for square op matrices. The"
+            "Expect_super only works for square op matrices. The "
             f"provided op has shape: {op.shape}"
         )
 
