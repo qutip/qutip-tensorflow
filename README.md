@@ -140,19 +140,25 @@ Examples:
 -`python benchmarks/benchmarks.py -k"test_linear_algebra" --collect-only`:
 Shows all the available benchmarks. Useful to filter them with the `-k`
 argument. 
+
 -`python benchmarks/benchmarks.py -k"matmul"`: Runs only the benchmarks for
 `matmul`.
+
 -`python benchmarks/benchmarks.py -k"add and -dense-"`: Runs only the
 benchmarks for `add` (addition) with dense random matrices. 
+
 -`python benchmarks/benchmarks.py -k"add and -dense- and qutip_dense"`: runs only the
 benchmarks for `add` with dense random matrices and only for the `qutip_dense`
 data type. 
+
 -`python benchmarks/benchmarks.py -k"add and -dense- and qutip_"`: runs only the
 benchmarks for `add` with dense random matrices for all the specialisations in
 QuTiP. 
+
 -`python benchmarks/benchmarks.py -k"expm and -512-"`: Runs only the
 benchmarks for `expm` for a matrix of size 512x512 (the size can only be
 2,4,8...,512,1024).
+
 -`python benchmarks/benchmarks.py -k"(tensorflow or numpy or qutip_dense) and
 -2-"`: Runs the benchmarks for every operation with hermitian
 matrices of size 2x2 represented with either `tensorflow`, `numpy` or the
