@@ -17,7 +17,7 @@ Once qutip-tensorflow is imported, it hooks into QuTiP adding a new data backed
 based on TensorFlow's Tensor. It is hence not necessary to use any of
 qutip-tensorflow's functions explicitly.
 
-The main class implemented in qutip-tensorflow is the `TfTensor` class that
+The main class implemented in qutip-tensorflow is `TfTensor` that
 wraps around a `Tensor` to provide compatibility between QuTiP and TensorFlow.
 It is possible to instantiate a new `Qobj` backed with a `TfTensor` using:
 ```python
@@ -42,7 +42,7 @@ sx = sx.to('tftensor') # 'TfTensor' also works
 sx.data  # Instance of `TfTensor`
 ```
 
-When importing qutip-tensorlow, operations are done using the default detected
+When importing qutip-tensorflow, operations are done using the default detected
 device. Hence, if a GPU is configured by TensorFlow, it will use make use of it.
 
 qutip-tensorflow also works with TensorFlow's `GradientTape` for auto
@@ -67,7 +67,7 @@ tape.gradient(y, variable)  # 1
 ```
 
 For a more involved example of how to use `GradientTape` for optimization
-purposes see the example notebook in `qutip_tensorflwo/examples`, which can be
+purposes see the example notebook in `qutip_tensorflow/examples`, which can be
 run in [colab](https://colab.research.google.com/) using a GPU. To configure
 the GPU in colab see [here](https://colab.research.google.com/notebooks/gpu.ipynb).
 
