@@ -71,6 +71,18 @@ purposes see the example notebook in `qutip_tensorflwo/examples`, which can be
 run in [colab](https://colab.research.google.com/) using a GPU. To configure
 the GPU in colab see [here](https://colab.research.google.com/notebooks/gpu.ipynb).
 
+What is not supported yet
+-------------------------
+
+There are some features from TensorFlow that are not supported yet:
+- function tracing with `tf.function`: see progress in issue #30.
+- Support for keras models: see progress in issue #31.
+- Support for batched operations: see progress in issue #29.
+- There are still a few functions that do not relay in TensorFlow for the
+  computation. This means auto differentiation and GPU operations are not
+  possible with them. See progress in issue #28.
+
+
 Installation (Linux)
 --------------------
 
@@ -78,7 +90,7 @@ At this moment it is only possible to install qutip-tensorflow from source.
 
 _It is strongly recommended to install qutip-tensorflow in  a [virtual
 environment](https://docs.python.org/3/tutorial/venv.html) so that it does not
-conflict with your local installation of python._
+conflict with your local python installation._
 
 First install QuTiP 5.0. Note that this version of QuTiP is still in
 development, so it is necessary to install it from source:
@@ -89,6 +101,63 @@ To install qutip-tensorflow from source:
 ```
 pip install git+https://github.com/qutip/qutip-tensorflow
 ```
+
+Benchmarks
+----------
+
+If you aim to use qutip-tensorflow to speed up your code by computing with a
+GPU, it is possible to run a set of benchmarks that have been prepared to help
+assessing when GPU operations are faster than CPU ones. It is expected that for
+small system sizes CPU operations will be faster, whereas for larger system
+sizes GPU operations may posses an advantage depending on your hardware.
+
+To run the benchmarks first clone the repository and install the package.
+```
+git clone https://github.com/qutip/qutip-tensorflow.git
+cd qutip-tensorflow
+pip install git+https://github.com/qutip/qutip@dev.major
+pip install ".[full]"
+```
+
+To run the benchmarks use
+```
+python benchmarks/benchmarks.py
+```
+
+This will store the resulting data and figures in the folder `.benchmarks/`.
+
+The benchmarks consist on a set of operations, such as matrix multiplication,
+that are tested for each of the specialisations in QuTiP. Some of the
+benchmarks also include similar operations using pure NumPy, TensorFlow or
+SciPy implementations of the same operation for comparison. The benchmarks run
+the same operations for different hermitian matrix sizes that can either be
+dense or sparse (tridiagonal).  The script also includes a few other options.
+You can get a description of the arguments with `python
+benchmarks/benchmarks.py --help`. It also accepts any argument that
+[pytest-benchmark](https://pytest-benchmark.readthedocs.io/en/latest/) accepts.
+Examples:
+
+-`python benchmarks/benchmarks.py -k"test_linear_algebra" --collect-only`:
+Shows all the available benchmarks. Useful to filter them with the `-k`
+argument. 
+-`python benchmarks/benchmarks.py -k"matmul"`: Runs only the benchmarks for
+`matmul`.
+-`python benchmarks/benchmarks.py -k"add and -dense-"`: Runs only the
+benchmarks for `add` (addition) with dense random matrices. 
+-`python benchmarks/benchmarks.py -k"add and -dense- and qutip_dense"`: runs only the
+benchmarks for `add` with dense random matrices and only for the `qutip_dense`
+data type. 
+-`python benchmarks/benchmarks.py -k"add and -dense- and qutip_"`: runs only the
+benchmarks for `add` with dense random matrices for all the specialisations in
+QuTiP. 
+-`python benchmarks/benchmarks.py -k"expm and -512-"`: Runs only the
+benchmarks for `expm` for a matrix of size 512x512 (the size can only be
+2,4,8...,512,1024).
+-`python benchmarks/benchmarks.py -k"(tensorflow or numpy or qutip_dense) and
+-2-"`: Runs the benchmarks for every operation with hermitian
+matrices of size 2x2 represented with either `tensorflow`, `numpy` or the
+`qutip_dense` data type.
+
 
 Support
 -------
