@@ -2,11 +2,18 @@ import numpy as np
 import tensorflow as tf
 import pytest
 
-from qutip_tensorflow.core.data import TfTensor
-from qutip_tensorflow import data
 import qutip.tests.core.data.test_mathematics as testing
 from qutip.tests.core.data.test_expect import TestExpect, TestExpectSuper
+from qutip.tests.core.data.test_norm import (
+    TestTraceNorm,
+    TestFrobeniusNorm,
+    TestL2Norm,
+    TestMaxNorm,
+    TestOneNorm,
+)
 
+from qutip_tensorflow.core.data import TfTensor
+from qutip_tensorflow import data
 from . import conftest
 
 testing._ALL_CASES = {
@@ -116,4 +123,34 @@ class TestPow(testing.TestPow):
 class TestProject(testing.TestProject):
     specialisations = [
         pytest.param(data.project_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestTraceNorm(TestTraceNorm):
+    specialisations = [
+        pytest.param(data.norm.trace_tftensor, TfTensor, tf.Tensor),
+    ]
+
+
+class TestOneNorm(TestOneNorm):
+    specialisations = [
+        pytest.param(data.norm.one_tftensor, TfTensor, tf.Tensor),
+    ]
+
+
+class TestL2Norm(TestL2Norm):
+    specialisations = [
+        pytest.param(data.norm.l2_tftensor, TfTensor, tf.Tensor),
+    ]
+
+
+class TestMaxNorm(TestMaxNorm):
+    specialisations = [
+        pytest.param(data.norm.max_tftensor, TfTensor, tf.Tensor),
+    ]
+
+
+class TestFrobeniusNorm(TestFrobeniusNorm):
+    specialisations = [
+        pytest.param(data.norm.frobenius_tftensor, TfTensor, tf.Tensor),
     ]
