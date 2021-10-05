@@ -11,3 +11,5 @@ from .reshape import *
 from .expm import *
 from .project import *
 from .pow import *
+from .expect import *
+from . import norm
