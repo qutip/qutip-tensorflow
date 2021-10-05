@@ -3,6 +3,11 @@ import tensorflow as tf
 import pytest
 
 import qutip.tests.core.data.test_mathematics as testing
+from qutip.tests.core.data.test_reshape import (TestReshape,
+                                                TestColumnStack,
+                                                TestColumnUnstack,
+                                                TestSplitColumns)
+
 from qutip.tests.core.data.test_expect import TestExpect, TestExpectSuper
 from qutip.tests.core.data.test_norm import (
     TestTraceNorm,
@@ -95,6 +100,29 @@ class TestNeg(testing.TestNeg):
         pytest.param(data.neg_tftensor, TfTensor, TfTensor),
     ]
 
+
+class TestReshape(TestReshape):
+    specialisations = [
+        pytest.param(data.reshape_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestSplitColumns(TestSplitColumns):
+    specialisations = [
+        pytest.param(data.split_columns_tftensor, TfTensor, list),
+    ]
+
+
+class TestColumnUnstack(TestColumnUnstack):
+    specialisations = [
+        pytest.param(data.column_unstack_tftensor, TfTensor, TfTensor),
+    ]
+
+
+class TestColumnStack(TestColumnStack):
+    specialisations = [
+        pytest.param(data.column_stack_tftensor, TfTensor, TfTensor),
+    ]
 
 class TestExpect(TestExpect):
     specialisations = [
