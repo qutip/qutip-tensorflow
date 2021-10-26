@@ -95,7 +95,7 @@ class TestClassMethods:
         _list_dense = _numpy_dense.tolist()
         test = TfTensor(_list_dense)
         assert test.shape == shape
-        assert test._tf.dtype == tf.complex128
+        assert test._tf.dtype == tf.complex64
         assert test._tf.shape == shape
         assert_almost_equal(test.to_array(), _list_dense)
 
@@ -106,8 +106,9 @@ class TestClassMethods:
         _numpy_dense = np.random.rand(*shape).astype(dtype, casting="unsafe")
         test = TfTensor(_numpy_dense)
         assert test.shape == shape
-        assert test._tf.dtype == tf.complex128
+        assert test._tf.dtype == tf.complex64
         assert test._tf.shape == shape
+        _numpy_dense = _numpy_dense.astype(np.complex64)
         assert np.all(test.to_array() == _numpy_dense)
 
     @pytest.mark.parametrize(
@@ -119,9 +120,9 @@ class TestClassMethods:
         test = TfTensor(tensor)
         assert test.shape == shape
         assert test._tf.shape == shape
-        assert test._tf.dtype == tf.complex128
+        assert test._tf.dtype == tf.complex64
 
-        tensor = tf.cast(tensor, dtype=tf.complex128)
+        tensor = tf.cast(tensor, dtype=tf.complex64)
         assert np.all(test._tf == tensor)
 
     @pytest.mark.parametrize(
@@ -154,7 +155,7 @@ class TestClassMethods:
 
     @pytest.mark.parametrize("copy", [True, False])
     def test_init_copy(self, copy, tensor_dense):
-        """Test that copy argument in __init__ work as intended."""
+        """Test that copy argument in __init__ works as intended."""
         test = TfTensor(tensor_dense, copy=copy)
         assert test.shape == tuple(tensor_dense.shape.as_list())
         assert np.all(test.to_array() == tensor_dense)

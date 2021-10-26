@@ -26,6 +26,8 @@ testing._ALL_CASES = {
 }
 testing._RANDOM = {TfTensor: lambda shape: [lambda: conftest.random_tftensor(shape)]}
 
+print('hi')
+
 
 class TestAdd(testing.TestAdd):
     specialisations = [
@@ -59,24 +61,28 @@ class TestTranspose(testing.TestTranspose):
 
 
 class TestInner(testing.TestInner):
+    tol = 1e-3
     specialisations = [
         pytest.param(data.inner_tftensor, TfTensor, TfTensor, tf.Tensor),
     ]
 
 
 class TestInnerOp(testing.TestInnerOp):
+    tol = 1e-3
     specialisations = [
         pytest.param(data.inner_op_tftensor, TfTensor, TfTensor, TfTensor, tf.Tensor),
     ]
 
 
 class TestTrace(testing.TestTrace):
+    tol = 1e-5
     specialisations = [
         pytest.param(data.trace_tftensor, TfTensor, tf.Tensor),
     ]
 
 
 class TestKron(testing.TestKron):
+    tol = 1e-5
     specialisations = [
         pytest.param(data.kron_tftensor, TfTensor, TfTensor, TfTensor),
     ]
@@ -90,12 +96,14 @@ class TestMul(testing.TestMul):
 
 
 class TestMatmul(testing.TestMatmul):
+    tol = 1e-4
     specialisations = [
         pytest.param(data.matmul_tftensor, TfTensor, TfTensor, TfTensor),
     ]
 
 
 class TestNeg(testing.TestNeg):
+
     specialisations = [
         pytest.param(data.neg_tftensor, TfTensor, TfTensor),
     ]
@@ -125,60 +133,73 @@ class TestColumnStack(TestColumnStack):
     ]
 
 class TestExpect(TestExpect):
+    tol = 1e-3
     specialisations = [
         pytest.param(data.expect_tftensor, TfTensor, TfTensor, tf.Tensor),
     ]
 
 
 class TestExpectSuper(TestExpectSuper):
+    tol = 1e-4
     specialisations = [
         pytest.param(data.expect_super_tftensor, TfTensor, TfTensor, tf.Tensor),
     ]
-    
-      
+
+
 class TestExpm(testing.TestExpm):
+    tol = 1e-5
     specialisations = [
         pytest.param(data.expm_tftensor, TfTensor, TfTensor),
     ]
 
 
 class TestPow(testing.TestPow):
+    rtol = 1e-4
     specialisations = [
         pytest.param(data.pow_tftensor, TfTensor, TfTensor),
     ]
 
 
 class TestProject(testing.TestProject):
+    tol = 1e-5
     specialisations = [
         pytest.param(data.project_tftensor, TfTensor, TfTensor),
     ]
 
 
 class TestTraceNorm(TestTraceNorm):
+    # this one needs larger tol because the output is larger in magnitude and
+    # tol refers to absolute tolerance. This suggest that we may want to use
+    # a relative tol instead.
+    tol = 1e-2
     specialisations = [
         pytest.param(data.norm.trace_tftensor, TfTensor, tf.Tensor),
     ]
 
 
 class TestOneNorm(TestOneNorm):
+    tol = 1e-4
     specialisations = [
         pytest.param(data.norm.one_tftensor, TfTensor, tf.Tensor),
     ]
 
 
 class TestL2Norm(TestL2Norm):
+    tol = 1e-5
     specialisations = [
         pytest.param(data.norm.l2_tftensor, TfTensor, tf.Tensor),
     ]
 
 
 class TestMaxNorm(TestMaxNorm):
+    tol = 1e-5
     specialisations = [
         pytest.param(data.norm.max_tftensor, TfTensor, tf.Tensor),
     ]
 
 
 class TestFrobeniusNorm(TestFrobeniusNorm):
+    tol = 1e-5
     specialisations = [
         pytest.param(data.norm.frobenius_tftensor, TfTensor, tf.Tensor),
     ]

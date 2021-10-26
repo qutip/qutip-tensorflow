@@ -12,6 +12,7 @@ from qutip_tensorflow.core.data import TfTensor
 def random_numpy_dense(shape, fortran):
     """Generate a random numpy dense matrix with the given shape."""
     out = np.random.rand(*shape) + 1j * np.random.rand(*shape)
+    out = out.astype(np.complex64)
     if fortran:
         out = np.asfortranarray(out)
     return out
@@ -21,6 +22,7 @@ def random_tensor_dense(shape):
     """Generate a random `Tensor` dense matrix with the given shape."""
     out = np.random.rand(*shape) + 1j * np.random.rand(*shape)
     out = tf.constant(out)
+    out = tf.cast(out, dtype=tf.complex64)
     return out
 
 

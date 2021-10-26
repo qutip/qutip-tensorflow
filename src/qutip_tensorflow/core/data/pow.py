@@ -18,7 +18,7 @@ def pow_tftensor(matrix, n):
                          matrix has shape={matrix.shape}"""
         )
 
-    out = tf.eye(matrix.shape[0], matrix.shape[1], dtype=tf.complex128)
+    out = tf.eye(matrix.shape[0], matrix.shape[1], dtype=tf.complex64)
     pow = matrix._tf
 
     out = pow if n & 1 else out

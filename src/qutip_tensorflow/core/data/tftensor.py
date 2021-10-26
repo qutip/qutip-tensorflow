@@ -31,7 +31,7 @@ class TfTensor(qutip.core.data.Data):
 
         # If dtype of Tensor is already a tf.complex128 then this will not
         # return a copy
-        data = tf.cast(data, tf.complex128)
+        data = tf.cast(data, tf.complex64)
 
         # Inherit shape from data and expand shape
         if shape is None:
@@ -95,7 +95,7 @@ class TfTensor(qutip.core.data.Data):
         """
         A fast low-level constructor for wrapping an existing Tensor array in a
         TfTensor object without copying it. The ``data`` argument must be a
-        Tensor array with the correct shape.
+        Tensor array with the correct shape and dtype.
         """
         out = cls.__new__(cls)
         super(cls, out).__init__(shape)
