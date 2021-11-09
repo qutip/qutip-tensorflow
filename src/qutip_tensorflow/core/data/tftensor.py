@@ -3,10 +3,10 @@ from tensorflow.errors import InvalidArgumentError
 import qutip
 import numbers
 
-__all__ = ["TfTensor"]
+__all__ = ["TfTensor128", "TfTensor64"]
 
 
-class TfTensor(qutip.core.data.Data):
+class _BaseTfTensor(qutip.core.data.Data):
     """This class provide a wraps around TensorFlow's Tensor. It will store data
     as a Tensor of dtype ``tensorflow.complex128``. Data will be expanded into a 2D
     Tensor.
@@ -22,16 +22,24 @@ class TfTensor(qutip.core.data.Data):
         Default ``False``. If ``True`` then the object is copied. Otherwise, a
         copy will only be made if tf.constant returns a copy of data (when input
         is not a `Tensor`) or if a copy is needed to satisfy dtype
-        (tensorflow.complex128) and shape (2D Tensor)."""
+        (tensorflow.complex128) and shape (2D Tensor).
+    dtype: tf.dtypes
+        Default ``tensorflow.complex128``. Data type of the tensorflow tensor.
+        Only ``tensorflow.complex128`` and ``tensorflow.complex64`` are
+        supported.
+    """
 
-    def __init__(self, data, shape=None, copy=False):
+    def __init__(self, data, shape=None, copy=False, dtype=tf.complex128):
         # If the input is a tensor this does not copy it. Otherwise it will
         # return a copy.
         data = tf.constant(data)
 
         # If dtype of Tensor is already a tf.complex128 then this will not
         # return a copy
-        data = tf.cast(data, tf.complex128)
+        if dtype is not tf.complex128 and dtype is not tf.complex64:
+            raise ValueError("Dtype must be either tensorflow.complex64 or "
+                             "tensorflow.complex128 but it is: " + repr(dtype))
+        data = tf.cast(data, dtype)
 
         # Inherit shape from data and expand shape
         if shape is None:
@@ -73,19 +81,19 @@ class TfTensor(qutip.core.data.Data):
             self._tf = data
 
     def copy(self):
-        return TfTensor(self._tf, shape=self.shape, copy=True)
+        return self.__class__(self._tf, shape=self.shape, copy=True)
 
     def to_array(self):
         return self._tf.numpy()
 
     def conj(self):
-        return TfTensor(tf.math.conj(self._tf))
+        return self.__class__(tf.math.conj(self._tf))
 
     def transpose(self):
-        return TfTensor(tf.transpose(self._tf))
+        return self.__class__(tf.transpose(self._tf))
 
     def adjoint(self):
-        return TfTensor(tf.linalg.adjoint(self._tf))
+        return self.__class__(tf.linalg.adjoint(self._tf))
 
     def trace(self):
         return tf.linalg.trace(self._tf).numpy()
@@ -95,9 +103,22 @@ class TfTensor(qutip.core.data.Data):
         """
         A fast low-level constructor for wrapping an existing Tensor array in a
         TfTensor object without copying it. The ``data`` argument must be a
-        Tensor array with the correct shape.
+        Tensor array with the correct shape. This is an unsafe method that does
+        not perform any type/shape check and should only be used if the type of
+        data is already known.
         """
         out = cls.__new__(cls)
-        super(cls, out).__init__(shape)
+        qutip.core.data.Data.__init__(out, shape)
         out._tf = data
         return out
+
+
+class TfTensor128(_BaseTfTensor):
+    def __init__(self, data, shape=None, copy=False):
+        super().__init__(data, shape=shape, copy=copy,
+                         dtype=tf.complex128)
+
+
+class TfTensor64(_BaseTfTensor):
+    def __init__(self, data, shape=None, copy=False):
+        super().__init__(data, shape=shape, copy=copy, dtype=tf.complex64)

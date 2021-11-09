@@ -6,7 +6,7 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import tensorflow as tf
 
-from qutip_tensorflow.core.data import TfTensor
+from qutip_tensorflow.core.data import TfTensor128, TfTensor64
 
 
 def random_numpy_dense(shape, fortran):
@@ -24,6 +24,10 @@ def random_tensor_dense(shape):
     return out
 
 
-def random_tftensor(shape):
+def random_tftensor128(shape):
     """Generate a random TfTensor matrix with the given shape."""
-    return TfTensor(random_tensor_dense(shape))
+    return TfTensor128(random_tensor_dense(shape))
+
+def random_tftensor64(shape):
+    """Generate a random TfTensor matrix with the given shape."""
+    return TfTensor64(random_tensor_dense(shape))

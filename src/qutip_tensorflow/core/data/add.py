@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -20,9 +20,9 @@ def add_tftensor(left, right, scale=1):
 
     # If scale=1 we obtain a x2 speed-up if we do not multiply by the scale.
     if scale == 1:
-        return TfTensor._fast_constructor(left._tf + right._tf, shape=left.shape)
+        return left._fast_constructor(left._tf + right._tf, shape=left.shape)
     else:
-        return TfTensor._fast_constructor(
+        return left._fast_constructor(
             left._tf + scale * right._tf, shape=left.shape
         )
 
@@ -43,18 +43,20 @@ def iadd_tftensor(left, right, scale=1):
 
 def sub_tftensor(left, right):
     _check_shape(left, right)
-    return TfTensor._fast_constructor(left._tf - right._tf, shape=left.shape)
+    return left._fast_constructor(left._tf - right._tf, shape=left.shape)
 
 
 # `add_conversions` will register the data layer
 qutip.data.add.add_specialisations(
     [
-        (TfTensor, TfTensor, TfTensor, add_tftensor),
+        (TfTensor128, TfTensor128, TfTensor128, add_tftensor),
+        (TfTensor64, TfTensor64, TfTensor64, add_tftensor),
     ]
 )
 
 qutip.data.sub.add_specialisations(
     [
-        (TfTensor, TfTensor, TfTensor, sub_tftensor),
+        (TfTensor128, TfTensor128, TfTensor128, sub_tftensor),
+        (TfTensor64, TfTensor64, TfTensor64, sub_tftensor),
     ]
 )
