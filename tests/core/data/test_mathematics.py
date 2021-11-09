@@ -142,12 +142,16 @@ class TestAdd(testing.TestAdd):
     # ]
 
 
-class TestExpm(testing.TestExpm):
+class TestExpm64(testing.TestExpm):
+    rtol = 1e-4
     specialisations = [
-        pytest.param(data.expm_tftensor, TfTensor128, TfTensor128),
         pytest.param(data.expm_tftensor, TfTensor64, TfTensor64),
     ]
 
+class TestExpm128(testing.TestExpm):
+    specialisations = [
+        pytest.param(data.expm_tftensor, TfTensor128, TfTensor128),
+    ]
 
 # class TestPow(testing.TestPow):
     # specialisations = [
