@@ -26,7 +26,7 @@ def test_create(base, dtype):
     ["from_", "base"],
     [
         pytest.param("tftensor", _dense_tensor, id="from tensorflow str"),
-        pytest.param("TfTensor128", _dense_tensor, id="from TfTensor str"),
+        pytest.param("tftensor128", _dense_tensor, id="from TfTensor str"),
         pytest.param(TfTensor128, _dense_tensor, id="from TfTensor type"),
     ],
 )
@@ -40,7 +40,7 @@ def test_create(base, dtype):
         pytest.param("CSR", data.CSR, id="to CSR STR"),
         pytest.param(data.CSR, data.CSR, id="to CSR type"),
         pytest.param("tftensor", TfTensor128, id="to tensorflow str"),
-        pytest.param("TfTensor128", TfTensor128, id="to tensorflow str_type"),
+        pytest.param("tftensor128", TfTensor128, id="to tensorflow str_type"),
         pytest.param(TfTensor128, TfTensor128, id="to tensorflow type"),
     ],
 )
@@ -67,7 +67,7 @@ def test_converters_qtf_to_qt(from_, base, to_, dtype):
     ["to_", "dtype"],
     [
         pytest.param("tftensor", TfTensor128, id="to tensorflow str"),
-        pytest.param("TfTensor128", TfTensor128, id="to tensorflow str_type"),
+        pytest.param("tftensor128", TfTensor128, id="to tensorflow str_type"),
         pytest.param(TfTensor128, TfTensor128, id="to tensorflow type"),
     ],
 )
