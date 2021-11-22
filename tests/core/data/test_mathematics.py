@@ -8,7 +8,7 @@ import qutip.tests.core.data.test_mathematics as testing
                                                 # TestColumnUnstack,
                                                 # TestSplitColumns)
 
-# from qutip.tests.core.data.test_expect import TestExpect, TestExpectSuper
+from qutip.tests.core.data.test_expect import TestExpect, TestExpectSuper
 # from qutip.tests.core.data.test_norm import (
     # TestTraceNorm,
     # TestFrobeniusNorm,
@@ -134,17 +134,17 @@ class TestTranspose(testing.TestTranspose):
         # pytest.param(data.column_stack_tftensor, TfTensor, TfTensor),
     # ]
 
-# class TestExpect(TestExpect):
-    # specialisations = [
-        # pytest.param(data.expect_tftensor, TfTensor, TfTensor, tf.Tensor),
-    # ]
+class TestExpect(TestExpect):
+    specialisations = [
+        pytest.param(data.expect_tftensor, TfTensor128, TfTensor128, tf.Tensor),
+        pytest.param(data.expect_tftensor, TfTensor64, TfTensor64, tf.Tensor),
+    ]
 
-
-# class TestExpectSuper(TestExpectSuper):
-    # specialisations = [
-        # pytest.param(data.expect_super_tftensor, TfTensor, TfTensor, tf.Tensor),
-    # ]
-
+class TestExpectSuper(TestExpectSuper):
+    specialisations = [
+        pytest.param(data.expect_super_tftensor, TfTensor128, TfTensor128, tf.Tensor),
+        pytest.param(data.expect_super_tftensor, TfTensor64, TfTensor64, tf.Tensor),
+    ]
 
 class TestExpm64(testing.TestExpm):
     rtol = 1e-4

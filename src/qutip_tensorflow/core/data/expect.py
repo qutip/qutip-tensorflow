@@ -1,6 +1,6 @@
 import qutip
 from math import sqrt
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -69,7 +69,10 @@ def expect_super_tftensor(op, state):
     return tf.einsum("iijk,jk->", op, state)
 
 
-qutip.data.expect.add_specialisations([(TfTensor, TfTensor, expect_tftensor)])
+qutip.data.expect.add_specialisations([(TfTensor128, TfTensor128, expect_tftensor),
+                                       (TfTensor64, TfTensor64, expect_tftensor)])
+
 qutip.data.expect_super.add_specialisations(
-    [(TfTensor, TfTensor, expect_super_tftensor)]
+    [(TfTensor64, TfTensor64, expect_super_tftensor),
+     (TfTensor128, TfTensor128, expect_super_tftensor)]
 )

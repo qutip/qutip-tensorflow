@@ -11,5 +11,5 @@ from .adjoint import *
 from .expm import *
 # from .project import *
 # from .pow import *
-# from .expect import *
+from .expect import *
 # from . import norm
