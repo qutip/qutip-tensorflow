@@ -40,28 +40,32 @@ class TestAdd(testing.TestAdd):
     ]
 
 
-# class TestSub(testing.TestSub):
-    # specialisations = [
-        # pytest.param(data.sub_tftensor, TfTensor, TfTensor, TfTensor),
-    # ]
+class TestSub(testing.TestSub):
+    specialisations = [
+        pytest.param(data.sub_tftensor, TfTensor128, TfTensor128, TfTensor128),
+        pytest.param(data.sub_tftensor, TfTensor64, TfTensor64, TfTensor64),
+    ]
 
 
-# class TestAdjoint(testing.TestAdjoint):
-    # specialisations = [
-        # pytest.param(data.adjoint_tftensor, TfTensor, TfTensor),
-    # ]
+class TestAdjoint(testing.TestAdjoint):
+    specialisations = [
+        pytest.param(data.adjoint_tftensor, TfTensor128, TfTensor128, TfTensor128),
+        pytest.param(data.adjoint_tftensor, TfTensor64, TfTensor64, TfTensor64),
+    ]
 
 
-# class TestConj(testing.TestConj):
-    # specialisations = [
-        # pytest.param(data.conj_tftensor, TfTensor, TfTensor),
-    # ]
+class TestConj(testing.TestConj):
+    specialisations = [
+        pytest.param(data.conj_tftensor, TfTensor128, TfTensor128, TfTensor128),
+        pytest.param(data.conj_tftensor, TfTensor64, TfTensor64, TfTensor64),
+    ]
 
 
-# class TestTranspose(testing.TestTranspose):
-    # specialisations = [
-        # pytest.param(data.transpose_tftensor, TfTensor, TfTensor),
-    # ]
+class TestTranspose(testing.TestTranspose):
+    specialisations = [
+        pytest.param(data.transpose_tftensor, TfTensor128, TfTensor128, TfTensor128),
+        pytest.param(data.transpose_tftensor, TfTensor64, TfTensor64, TfTensor64),
+    ]
 
 
 # class TestInner(testing.TestInner):
