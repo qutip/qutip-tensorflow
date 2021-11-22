@@ -2,19 +2,21 @@ import numpy as np
 import pytest
 import qutip
 import qutip_tensorflow as qtf
-from qutip_tensorflow.core.data import TfTensor128
+from qutip_tensorflow.core.data import TfTensor128, TfTensor64
 from qutip import data
 from .conftest import random_tensor_dense
 
 
-_dense_tensor = TfTensor128(random_tensor_dense((2, 2)))
+_dense_tensor128 = TfTensor128(random_tensor_dense((2, 2)))
+_dense_tensor64 = TfTensor64(random_tensor_dense((2, 2)))
 
 
 @pytest.mark.parametrize(
     ["base", "dtype"],
     [
         pytest.param(random_tensor_dense((2, 2)), TfTensor128, id="Tensor"),
-        pytest.param(_dense_tensor, TfTensor128, id="TfTensor128"),
+        pytest.param(_dense_tensor128, TfTensor128, id="TfTensor128"),
+        pytest.param(_dense_tensor64, TfTensor64, id="TfTensor64"),
     ],
 )
 def test_create(base, dtype):
@@ -25,9 +27,11 @@ def test_create(base, dtype):
 @pytest.mark.parametrize(
     ["from_", "base"],
     [
-        pytest.param("tftensor", _dense_tensor, id="from tensorflow str"),
-        pytest.param("tftensor128", _dense_tensor, id="from TfTensor str"),
-        pytest.param(TfTensor128, _dense_tensor, id="from TfTensor type"),
+        pytest.param("tftensor", _dense_tensor128, id="from tensorflow str"),
+        pytest.param("tftensor128", _dense_tensor128, id="from TfTensor str"),
+        pytest.param(TfTensor128, _dense_tensor128, id="from TfTensor type"),
+        pytest.param("tftensor64", _dense_tensor64, id="from TfTensor str"),
+        pytest.param(TfTensor64, _dense_tensor64, id="from TfTensor type"),
     ],
 )
 @pytest.mark.parametrize(
@@ -42,6 +46,8 @@ def test_create(base, dtype):
         pytest.param("tftensor", TfTensor128, id="to tensorflow str"),
         pytest.param("tftensor128", TfTensor128, id="to tensorflow str_type"),
         pytest.param(TfTensor128, TfTensor128, id="to tensorflow type"),
+        pytest.param("tftensor64", TfTensor64, id="to tensorflow str_type"),
+        pytest.param(TfTensor64, TfTensor64, id="to tensorflow type"),
     ],
 )
 def test_converters_qtf_to_qt(from_, base, to_, dtype):
@@ -69,6 +75,8 @@ def test_converters_qtf_to_qt(from_, base, to_, dtype):
         pytest.param("tftensor", TfTensor128, id="to tensorflow str"),
         pytest.param("tftensor128", TfTensor128, id="to tensorflow str_type"),
         pytest.param(TfTensor128, TfTensor128, id="to tensorflow type"),
+        pytest.param("tftensor64", TfTensor64, id="to tensorflow str_type"),
+        pytest.param(TfTensor64, TfTensor64, id="to tensorflow type"),
     ],
 )
 def test_converters_qt_to_qtf(from_, base, to_, dtype):
