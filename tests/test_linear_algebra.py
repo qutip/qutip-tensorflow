@@ -15,7 +15,7 @@ with warnings.catch_warnings():
 
 import qutip_tensorflow as qtf
 
-# Get functions from unary ops that stater with `get`
+# Get functions from unary ops that begin with `get`
 unary_ops = [ getattr(benchmark_unary,_) for _ in dir(benchmark_unary) if _[:3]=="get"]
 unary_ids = [ _[4:] for _ in dir(benchmark_unary) if _[:3]=="get"]
 
@@ -63,7 +63,7 @@ def change_dtype(A, dtype):
         return A.to(dtype)
 
 #Supported dtypes
-dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.TfTensor]
+dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.TfTensor128]
 dtype_ids = ['numpy', 'tensorflow', 'scipy_csr', 'qutip_dense', 'qutip_csr',
              'qutip_tftensor']
 @pytest.fixture(params = dtype_list, ids=dtype_ids)

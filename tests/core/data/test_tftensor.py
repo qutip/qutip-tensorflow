@@ -5,7 +5,7 @@ import pytest
 
 from qutip.core import data
 from qutip.core.data import dense
-from qutip_tensorflow.core.data import TfTensor
+from qutip_tensorflow.core.data import TfTensor128
 
 from . import conftest
 
@@ -63,24 +63,24 @@ def list_dense(shape):
 
 @pytest.fixture(scope="function")
 def data_tensor_dense(tensor_dense):
-    return TfTensor(tensor_dense)
+    return TfTensor128(tensor_dense)
 
 
 class TestClassMethods:
     def test_init_from_list(self, list_dense, shape):
-        test = TfTensor(list_dense, shape)
+        test = TfTensor128(list_dense, shape)
         assert test.shape == shape
         assert np.all(test.to_array() == np.array(list_dense))
 
     def test_init_from_ndarray(self, numpy_dense):
-        test = TfTensor(numpy_dense)
+        test = TfTensor128(numpy_dense)
         assert test.shape == numpy_dense.shape
         assert np.all(test.to_array() == numpy_dense)
 
     def test_init_from_tensor(self, tensor_dense):
         """Test that initialization from tensor with default arguments works.
         (by default we do not copy the tensor)."""
-        test = TfTensor(tensor_dense)
+        test = TfTensor128(tensor_dense)
         assert test.shape == tuple(tensor_dense.shape.as_list())
         assert np.all(test.to_array() == tensor_dense)
 
@@ -93,7 +93,7 @@ class TestClassMethods:
     def test_init_from_list_other_dtype(self, shape, dtype):
         _numpy_dense = np.random.rand(*shape).astype(dtype, casting="unsafe")
         _list_dense = _numpy_dense.tolist()
-        test = TfTensor(_list_dense)
+        test = TfTensor128(_list_dense)
         assert test.shape == shape
         assert test._tf.dtype == tf.complex128
         assert test._tf.shape == shape
@@ -104,7 +104,7 @@ class TestClassMethods:
     )
     def test_init_from_ndarray_other_dtype(self, shape, dtype):
         _numpy_dense = np.random.rand(*shape).astype(dtype, casting="unsafe")
-        test = TfTensor(_numpy_dense)
+        test = TfTensor128(_numpy_dense)
         assert test.shape == shape
         assert test._tf.dtype == tf.complex128
         assert test._tf.shape == shape
@@ -116,7 +116,7 @@ class TestClassMethods:
     def test_init_from_tensor_other_dtype(self, shape, dtype):
         numpy_dense = np.random.rand(*shape).astype(dtype, casting="unsafe")
         tensor = tf.constant(numpy_dense)
-        test = TfTensor(tensor)
+        test = TfTensor128(tensor)
         assert test.shape == shape
         assert test._tf.shape == shape
         assert test._tf.dtype == tf.complex128
@@ -150,12 +150,12 @@ class TestClassMethods:
         incorrectly formatted inputs.
         """
         with pytest.raises(ValueError):
-            TfTensor(data, shape)
+            TfTensor128(data, shape)
 
     @pytest.mark.parametrize("copy", [True, False])
     def test_init_copy(self, copy, tensor_dense):
         """Test that copy argument in __init__ work as intended."""
-        test = TfTensor(tensor_dense, copy=copy)
+        test = TfTensor128(tensor_dense, copy=copy)
         assert test.shape == tuple(tensor_dense.shape.as_list())
         assert np.all(test.to_array() == tensor_dense)
 
