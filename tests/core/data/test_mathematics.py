@@ -68,16 +68,26 @@ class TestTranspose(testing.TestTranspose):
     ]
 
 
-# class TestInner(testing.TestInner):
-    # specialisations = [
-        # pytest.param(data.inner_tftensor, TfTensor, TfTensor, tf.Tensor),
-    # ]
+class TestInner128(testing.TestInner):
+    specialisations = [
+        pytest.param(data.inner_tftensor, TfTensor128, TfTensor128, tf.Tensor),
+    ]
 
 
-# class TestInnerOp(testing.TestInnerOp):
-    # specialisations = [
-        # pytest.param(data.inner_op_tftensor, TfTensor, TfTensor, TfTensor, tf.Tensor),
-    # ]
+class TestInner64(testing.TestInner):
+    rtol = 1e-6
+    specialisations = [
+        pytest.param(data.inner_tftensor, TfTensor64, TfTensor64, tf.Tensor),
+    ]
+
+
+class TestInnerOp(testing.TestInnerOp):
+    specialisations = [
+        pytest.param(data.inner_op_tftensor, TfTensor128, TfTensor128,
+                     TfTensor128, tf.Tensor),
+        pytest.param(data.inner_op_tftensor, TfTensor64, TfTensor64,
+                     TfTensor64, tf.Tensor),
+    ]
 
 
 # class TestTrace(testing.TestTrace):

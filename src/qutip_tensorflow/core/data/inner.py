@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -69,8 +69,11 @@ def inner_op_tftensor(left, op, right, scalar_is_ket=False):
         return tf.reshape(left._tf @ ket, shape=())
 
 
-qutip.data.inner.add_specialisations([(TfTensor, TfTensor, inner_tftensor)])
+qutip.data.inner.add_specialisations(
+    [(TfTensor128, TfTensor128, inner_tftensor),
+     (TfTensor64, TfTensor64, inner_tftensor)])
 
 qutip.data.inner_op.add_specialisations(
-    [(TfTensor, TfTensor, TfTensor, inner_op_tftensor)]
+    [(TfTensor128, TfTensor128, TfTensor128, inner_op_tftensor),
+     (TfTensor64, TfTensor64, TfTensor64, inner_op_tftensor)]
 )
