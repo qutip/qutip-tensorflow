@@ -69,6 +69,7 @@ def data_tensor_dense(tensor_dense):
 class TestTfTensor128:
     DataType = TfTensor128
     dtype = tf.complex128
+
     def test_init_from_list(self, list_dense, shape):
         """Test initialization with default arguments using a list."""
         test = self.DataType(list_dense, shape)
@@ -119,7 +120,8 @@ class TestTfTensor128:
         assert np.all(test._tf == _tensor_dense)
 
     @pytest.mark.parametrize(
-        "dtype", ["complex128", "complex64", "float64", "int32", "int64", "uint32"]
+        "dtype",
+        ["complex128", "complex64", "float64", "int32", "int64", "uint32"],
     )
     def test_init_from_tensor_other_dtype(self, shape, dtype):
         numpy_dense = np.random.rand(*shape).astype(dtype, casting="unsafe")

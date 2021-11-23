@@ -65,26 +65,36 @@ def column_unstack_tftensor(matrix, rows):
 
 
 def split_columns_tftensor(matrix, copy=True):
-    return [matrix.__class__(matrix._tf[:, k], copy=copy)
-            for k in range(matrix.shape[1])]
+    return [
+        matrix.__class__(matrix._tf[:, k], copy=copy)
+        for k in range(matrix.shape[1])
+    ]
 
 
-qutip.data.reshape.add_specialisations([
-    (TfTensor128, TfTensor128, reshape_tftensor),
-    (TfTensor64, TfTensor64, reshape_tftensor),
-])
+qutip.data.reshape.add_specialisations(
+    [
+        (TfTensor128, TfTensor128, reshape_tftensor),
+        (TfTensor64, TfTensor64, reshape_tftensor),
+    ]
+)
 
-qutip.data.column_unstack.add_specialisations([
-    (TfTensor128, TfTensor128, column_unstack_tftensor),
-    (TfTensor64, TfTensor64, column_unstack_tftensor)
-])
+qutip.data.column_unstack.add_specialisations(
+    [
+        (TfTensor128, TfTensor128, column_unstack_tftensor),
+        (TfTensor64, TfTensor64, column_unstack_tftensor),
+    ]
+)
 
-qutip.data.column_stack.add_specialisations([
-    (TfTensor128, TfTensor128, column_stack_tftensor),
-    (TfTensor64, TfTensor64, column_stack_tftensor)
-])
+qutip.data.column_stack.add_specialisations(
+    [
+        (TfTensor128, TfTensor128, column_stack_tftensor),
+        (TfTensor64, TfTensor64, column_stack_tftensor),
+    ]
+)
 
-qutip.data.split_columns.add_specialisations([
-    (TfTensor128, split_columns_tftensor),
-    (TfTensor64, split_columns_tftensor),
-])
+qutip.data.split_columns.add_specialisations(
+    [
+        (TfTensor128, split_columns_tftensor),
+        (TfTensor64, split_columns_tftensor),
+    ]
+)

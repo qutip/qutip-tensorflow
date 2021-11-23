@@ -13,7 +13,9 @@ __all__ = ["matmul_tftensor"]
 def _check_shape(left, right, out):
     if left.shape[1] != right.shape[0]:
         raise ValueError(
-            "incompatible matrix shapes " + str(left.shape) + " and "
+            "incompatible matrix shapes "
+            + str(left.shape)
+            + " and "
             + str(right.shape)
         )
     if (
@@ -50,6 +52,9 @@ def matmul_tftensor(left, right, scale=1, out=None):
         out._tf = result + out._tf
 
 
-qutip.data.matmul.add_specialisations([(TfTensor128, TfTensor128, TfTensor128,
-                                        matmul_tftensor),
-                                      (TfTensor64, TfTensor64, TfTensor64, matmul_tftensor)])
+qutip.data.matmul.add_specialisations(
+    [
+        (TfTensor128, TfTensor128, TfTensor128, matmul_tftensor),
+        (TfTensor64, TfTensor64, TfTensor64, matmul_tftensor),
+    ]
+)

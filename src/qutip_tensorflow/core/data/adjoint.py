@@ -16,7 +16,9 @@ def transpose_tftensor(matrix):
 
 
 def conj_tftensor(matrix):
-    return matrix._fast_constructor(tf.math.conj(matrix._tf), shape=matrix.shape)
+    return matrix._fast_constructor(
+        tf.math.conj(matrix._tf), shape=matrix.shape
+    )
 
 
 def adjoint_tftensor(matrix):

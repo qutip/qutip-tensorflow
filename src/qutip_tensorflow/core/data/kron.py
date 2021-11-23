@@ -22,7 +22,9 @@ def kron_tftensor(left, right):
     )
 
 
-qutip.data.kron.add_specialisations([(TfTensor128, TfTensor128, TfTensor128,
-                                      kron_tftensor),
-                                     (TfTensor64, TfTensor64, TfTensor64,
-                                      kron_tftensor)])
+qutip.data.kron.add_specialisations(
+    [
+        (TfTensor128, TfTensor128, TfTensor128, kron_tftensor),
+        (TfTensor64, TfTensor64, TfTensor64, kron_tftensor),
+    ]
+)

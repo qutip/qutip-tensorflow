@@ -37,8 +37,10 @@ class _BaseTfTensor(qutip.core.data.Data):
         # If dtype of Tensor is already a tf.complex128 then this will not
         # return a copy
         if dtype is not tf.complex128 and dtype is not tf.complex64:
-            raise ValueError("Dtype must be either tensorflow.complex64 or "
-                             "tensorflow.complex128 but it is: " + repr(dtype))
+            raise ValueError(
+                "Dtype must be either tensorflow.complex64 or "
+                "tensorflow.complex128 but it is: " + repr(dtype)
+            )
         data = tf.cast(data, dtype)
 
         # Inherit shape from data and expand shape
@@ -61,7 +63,8 @@ class _BaseTfTensor(qutip.core.data.Data):
             and shape[1] > 0
         ):
             raise ValueError(
-                """Shape must be a 2-tuple of positive ints, but is """ + repr(shape)
+                """Shape must be a 2-tuple of positive ints, but is """
+                + repr(shape)
             )
 
         super().__init__(shape)
@@ -73,7 +76,9 @@ class _BaseTfTensor(qutip.core.data.Data):
                 data = tf.reshape(data, shape)
             # We return ValueError to match what qutip returns.
             except InvalidArgumentError as e:
-                raise ValueError("""Shape of data must match shape argument.""") from e
+                raise ValueError(
+                    """Shape of data must match shape argument."""
+                ) from e
 
         if copy:
             self._tf = tf.identity(data)
@@ -115,8 +120,7 @@ class _BaseTfTensor(qutip.core.data.Data):
 
 class TfTensor128(_BaseTfTensor):
     def __init__(self, data, shape=None, copy=False):
-        super().__init__(data, shape=shape, copy=copy,
-                         dtype=tf.complex128)
+        super().__init__(data, shape=shape, copy=copy, dtype=tf.complex128)
 
 
 class TfTensor64(_BaseTfTensor):

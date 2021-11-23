@@ -2,6 +2,7 @@ import warnings
 
 import numpy as np
 import qutip
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import tensorflow as tf
@@ -27,6 +28,7 @@ def random_tensor_dense(shape):
 def random_tftensor128(shape):
     """Generate a random TfTensor matrix with the given shape."""
     return TfTensor128(random_tensor_dense(shape))
+
 
 def random_tftensor64(shape):
     """Generate a random TfTensor matrix with the given shape."""

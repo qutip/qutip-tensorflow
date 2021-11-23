@@ -8,12 +8,14 @@ with warnings.catch_warnings():
 
 __all__ = ["add_tftensor", "sub_tftensor", "iadd_tftensor"]
 
+
 def _check_shape(left, right):
     if left.shape != right.shape:
         raise ValueError(
             f"""Incompatible shapes for addition of two matrices:
                          left={left.shape} and right={right.shape}"""
         )
+
 
 def add_tftensor(left, right, scale=1):
     _check_shape(left, right)
@@ -26,6 +28,7 @@ def add_tftensor(left, right, scale=1):
             left._tf + scale * right._tf, shape=left.shape
         )
 
+
 def iadd_tftensor(left, right, scale=1):
     """This function performs an in-place addition. However, TensorFlow returns
     a new object after a mathematical operation. This means that in-place here
@@ -37,9 +40,10 @@ def iadd_tftensor(left, right, scale=1):
     if scale == 1:
         left._tf = left._tf + right._tf
     else:
-        left._tf = left._tf + scale*right._tf
+        left._tf = left._tf + scale * right._tf
 
     return left
+
 
 def sub_tftensor(left, right):
     _check_shape(left, right)
