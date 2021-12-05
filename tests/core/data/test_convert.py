@@ -81,7 +81,7 @@ def test_converters_qtf_to_qt(from_, base, to_, dtype):
         pytest.param("TfTensor128", TfTensor128, id="to tensorflow str_type caps"),
         pytest.param(TfTensor128, TfTensor128, id="to tensorflow type"),
         pytest.param("tftensor64", TfTensor64, id="to tensorflow str_type"),
-        pytest.param("TfTensor128", TfTensor64, id="to tensorflow str_type caps"),
+        pytest.param("TfTensor64", TfTensor64, id="to tensorflow str_type caps"),
         pytest.param(TfTensor64, TfTensor64, id="to tensorflow type"),
     ],
 )
