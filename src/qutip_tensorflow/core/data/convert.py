@@ -50,9 +50,9 @@ qutip.data.to.add_conversions(
 
 # User friendly name for conversion with `to` or Qobj creation functions:
 qutip.data.to.register_aliases(
-    ["tftensor128", "tftensor", "TfTensor"], TfTensor128
+    ["tftensor",  "tftensor128", "TfTensor128"], TfTensor128
 )
-qutip.data.to.register_aliases(["tftensor64"], TfTensor64)
+qutip.data.to.register_aliases(["tftensor64", "TfTensor64"], TfTensor64)
 
 qutip.data.create.add_creators(
     [
