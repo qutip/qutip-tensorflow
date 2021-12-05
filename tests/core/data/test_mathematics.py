@@ -2,31 +2,20 @@ import numpy as np
 import tensorflow as tf
 import pytest
 
-# import qutip.tests.core.data.test_mathematics as testing
-# from qutip.tests.core.data.test_reshape import (TestReshape,
-# TestColumnStack,
-# TestColumnUnstack,
-# TestSplitColumns)
+import qutip.tests.core.data.test_mathematics as testing
+import qutip.tests.core.data.test_reshape as testing_reshape
+import qutip.tests.core.data.test_expect as testing_expect
+import qutip.tests.core.data.test_norm as testing_norm
 
-# from qutip.tests.core.data.test_expect import TestExpect, TestExpectSuper
-# from qutip.tests.core.data.test_norm import (
-# TestTraceNorm,
-# TestFrobeniusNorm,
-# TestL2Norm,
-# TestMaxNorm,
-# TestOneNorm,
-# )
-
-import qutip.tests.core.data as testing
 from qutip_tensorflow.core.data import TfTensor64, TfTensor128
 from qutip_tensorflow import data
 from . import conftest
 
-testing.test_mathematics._ALL_CASES = {
+testing._ALL_CASES = {
     TfTensor64: lambda shape: [lambda: conftest.random_tftensor64(shape)],
     TfTensor128: lambda shape: [lambda: conftest.random_tftensor128(shape)],
 }
-testing.test_mathematics._RANDOM = {
+testing._RANDOM = {
     TfTensor64: lambda shape: [lambda: conftest.random_tftensor64(shape)],
     TfTensor128: lambda shape: [lambda: conftest.random_tftensor128(shape)],
 }
@@ -170,48 +159,48 @@ class TestNeg(testing.TestNeg):
     ]
 
 
-class TestReshape(testing.TestReshape):
+class TestReshape(testing_reshape.TestReshape):
     specialisations = [
         pytest.param(data.reshape_tftensor, TfTensor128, TfTensor128),
         pytest.param(data.reshape_tftensor, TfTensor64, TfTensor64),
     ]
 
 
-class TestSplitColumns(testing.TestSplitColumns):
+class TestSplitColumns(testing_reshape.TestSplitColumns):
     specialisations = [
         pytest.param(data.split_columns_tftensor, TfTensor128, list),
         pytest.param(data.split_columns_tftensor, TfTensor64, list),
     ]
 
 
-class TestColumnUnstack(testing.TestColumnUnstack):
+class TestColumnUnstack(testing_reshape.TestColumnUnstack):
     specialisations = [
         pytest.param(data.column_unstack_tftensor, TfTensor128, TfTensor128),
         pytest.param(data.column_unstack_tftensor, TfTensor64, TfTensor64),
     ]
 
 
-class TestColumnStack(testing.TestColumnStack):
+class TestColumnStack(testing_reshape.TestColumnStack):
     specialisations = [
         pytest.param(data.column_stack_tftensor, TfTensor128, TfTensor128),
         pytest.param(data.column_stack_tftensor, TfTensor64, TfTensor64),
     ]
 
 
-class TestExpect64(testing.TestExpect):
+class TestExpect64(testing_expect.TestExpect):
     rtol = 1e-5
     specialisations = [
         pytest.param(data.expect_tftensor, TfTensor64, TfTensor64, tf.Tensor),
     ]
 
 
-class TestExpect128(testing.TestExpect):
+class TestExpect128(testing_expect.TestExpect):
     specialisations = [
         pytest.param(data.expect_tftensor, TfTensor128, TfTensor128, tf.Tensor),
     ]
 
 
-class TestExpectSuper128(testing.TestExpectSuper):
+class TestExpectSuper128(testing_expect.TestExpectSuper):
     specialisations = [
         pytest.param(
             data.expect_super_tftensor, TfTensor128, TfTensor128, tf.Tensor
@@ -219,7 +208,7 @@ class TestExpectSuper128(testing.TestExpectSuper):
     ]
 
 
-class TestExpectSuper64(testing.TestExpectSuper):
+class TestExpectSuper64(testing_expect.TestExpectSuper):
     rtol = 1e-5
     specialisations = [
         pytest.param(
@@ -267,59 +256,65 @@ class TestProject64(testing.TestProject):
     ]
 
 
-class TestTraceNorm128(testing.TestTraceNorm):
+class TestTraceNorm128(testing_norm.TestTraceNorm):
     specialisations = [
         pytest.param(data.norm.trace_tftensor, TfTensor128, tf.Tensor),
     ]
 
 
-class TestTraceNorm64(testing.TestTraceNorm):
+class TestTraceNorm64(testing_norm.TestTraceNorm):
     rtol = 1e-5
     specialisations = [
         pytest.param(data.norm.trace_tftensor, TfTensor64, tf.Tensor),
     ]
 
 
-class TestOneNorm128(testing.TestOneNorm):
+class TestOneNorm128(testing_norm.TestOneNorm):
     specialisations = [
         pytest.param(data.norm.one_tftensor, TfTensor128, tf.Tensor),
     ]
 
 
-class TestOneNorm64(testing.TestOneNorm):
+class TestOneNorm64(testing_norm.TestOneNorm):
     rtol = 1e-5
     specialisations = [
         pytest.param(data.norm.one_tftensor, TfTensor64, tf.Tensor),
     ]
 
 
-class TestL2Norm128(testing.TestL2Norm):
+class TestL2Norm128(testing_norm.TestL2Norm):
     specialisations = [
         pytest.param(data.norm.l2_tftensor, TfTensor128, tf.Tensor),
     ]
 
 
-class TestL2Norm64(testing.TestL2Norm):
+class TestL2Norm64(testing_norm.TestL2Norm):
     rtol = 1e-5
     specialisations = [
         pytest.param(data.norm.l2_tftensor, TfTensor64, tf.Tensor),
     ]
 
 
-class TestMaxNorm(testing.TestMaxNorm):
+class TestMaxNorm128(testing_norm.TestMaxNorm):
     specialisations = [
         pytest.param(data.norm.max_tftensor, TfTensor128, tf.Tensor),
+    ]
+
+
+class TestMaxNorm64(testing_norm.TestMaxNorm):
+    rtol = 1e-5
+    specialisations = [
         pytest.param(data.norm.max_tftensor, TfTensor64, tf.Tensor),
     ]
 
 
-class TestFrobeniusNorm128(testing.TestFrobeniusNorm):
+class TestFrobeniusNorm128(testing_norm.TestFrobeniusNorm):
     specialisations = [
         pytest.param(data.norm.frobenius_tftensor, TfTensor128, tf.Tensor),
     ]
 
 
-class TestFrobeniusNorm64(testing.TestFrobeniusNorm):
+class TestFrobeniusNorm64(testing_norm.TestFrobeniusNorm):
     rtol = 1e-5
     specialisations = [
         pytest.param(data.norm.frobenius_tftensor, TfTensor64, tf.Tensor),
