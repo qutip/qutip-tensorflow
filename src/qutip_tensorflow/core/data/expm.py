@@ -15,9 +15,7 @@ def expm_tftensor(matrix):
             f"""Expm can only be performed in square matrix. This
                          matrix has shape={matrix.shape}"""
         )
-    return matrix._fast_constructor(
-        tf.linalg.expm(matrix._tf), shape=matrix.shape
-    )
+    return matrix._fast_constructor(tf.linalg.expm(matrix._tf), shape=matrix.shape)
 
 
 qutip.data.expm.add_specialisations(

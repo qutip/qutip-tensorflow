@@ -13,10 +13,7 @@ __all__ = ["matmul_tftensor"]
 def _check_shape(left, right, out):
     if left.shape[1] != right.shape[0]:
         raise ValueError(
-            "incompatible matrix shapes "
-            + str(left.shape)
-            + " and "
-            + str(right.shape)
+            "incompatible matrix shapes " + str(left.shape) + " and " + str(right.shape)
         )
     if (
         out is not None

@@ -63,8 +63,7 @@ class _BaseTfTensor(qutip.core.data.Data):
             and shape[1] > 0
         ):
             raise ValueError(
-                """Shape must be a 2-tuple of positive ints, but is """
-                + repr(shape)
+                """Shape must be a 2-tuple of positive ints, but is """ + repr(shape)
             )
 
         super().__init__(shape)
@@ -76,9 +75,7 @@ class _BaseTfTensor(qutip.core.data.Data):
                 data = tf.reshape(data, shape)
             # We return ValueError to match what qutip returns.
             except InvalidArgumentError as e:
-                raise ValueError(
-                    """Shape of data must match shape argument."""
-                ) from e
+                raise ValueError("""Shape of data must match shape argument.""") from e
 
         if copy:
             self._tf = tf.identity(data)

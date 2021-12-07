@@ -24,9 +24,7 @@ def add_tftensor(left, right, scale=1):
     if scale == 1:
         return left._fast_constructor(left._tf + right._tf, shape=left.shape)
     else:
-        return left._fast_constructor(
-            left._tf + scale * right._tf, shape=left.shape
-        )
+        return left._fast_constructor(left._tf + scale * right._tf, shape=left.shape)
 
 
 def iadd_tftensor(left, right, scale=1):

@@ -39,9 +39,7 @@ class TestSub(testing.TestSub):
 
 class TestAdjoint(testing.TestAdjoint):
     specialisations = [
-        pytest.param(
-            data.adjoint_tftensor, TfTensor128, TfTensor128, TfTensor128
-        ),
+        pytest.param(data.adjoint_tftensor, TfTensor128, TfTensor128, TfTensor128),
         pytest.param(data.adjoint_tftensor, TfTensor64, TfTensor64, TfTensor64),
     ]
 
@@ -55,12 +53,8 @@ class TestConj(testing.TestConj):
 
 class TestTranspose(testing.TestTranspose):
     specialisations = [
-        pytest.param(
-            data.transpose_tftensor, TfTensor128, TfTensor128, TfTensor128
-        ),
-        pytest.param(
-            data.transpose_tftensor, TfTensor64, TfTensor64, TfTensor64
-        ),
+        pytest.param(data.transpose_tftensor, TfTensor128, TfTensor128, TfTensor128),
+        pytest.param(data.transpose_tftensor, TfTensor64, TfTensor64, TfTensor64),
     ]
 
 
@@ -139,9 +133,7 @@ class TestMul(testing.TestMul):
 
 class TestMatmul128(testing.TestMatmul):
     specialisations = [
-        pytest.param(
-            data.matmul_tftensor, TfTensor128, TfTensor128, TfTensor128
-        ),
+        pytest.param(data.matmul_tftensor, TfTensor128, TfTensor128, TfTensor128),
     ]
 
 
@@ -202,18 +194,14 @@ class TestExpect128(testing_expect.TestExpect):
 
 class TestExpectSuper128(testing_expect.TestExpectSuper):
     specialisations = [
-        pytest.param(
-            data.expect_super_tftensor, TfTensor128, TfTensor128, tf.Tensor
-        ),
+        pytest.param(data.expect_super_tftensor, TfTensor128, TfTensor128, tf.Tensor),
     ]
 
 
 class TestExpectSuper64(testing_expect.TestExpectSuper):
     rtol = 1e-5
     specialisations = [
-        pytest.param(
-            data.expect_super_tftensor, TfTensor64, TfTensor64, tf.Tensor
-        ),
+        pytest.param(data.expect_super_tftensor, TfTensor64, TfTensor64, tf.Tensor),
     ]
 
 

@@ -32,9 +32,7 @@ def _check_shape_super(op, state):
             f"has shape {state.shape}"
         )
     if op.shape[1] != state.shape[0]:
-        raise ValueError(
-            f"incompatible shapes op:{op.shape} and state:{state.shape}"
-        )
+        raise ValueError(f"incompatible shapes op:{op.shape} and state:{state.shape}")
     if op.shape[0] != op.shape[1]:
         raise ValueError(
             "Expect_super only works for square op matrices. The "

@@ -44,9 +44,7 @@ def inner_tftensor(left, right, scalar_is_ket=False):
     _check_shape_inner(left, right)
     left_is_scalar = left.shape[0] == left.shape[1] == 1
     left_is_ket = (
-        not left_is_scalar
-        and left.shape[1] == 1
-        or (left_is_scalar and scalar_is_ket)
+        not left_is_scalar and left.shape[1] == 1 or (left_is_scalar and scalar_is_ket)
     )
     if left_is_ket:
         return tf.reduce_sum(tf.math.conj(left._tf) * right._tf)
@@ -59,9 +57,7 @@ def inner_op_tftensor(left, op, right, scalar_is_ket=False):
 
     left_is_scalar = left.shape[0] == left.shape[1] == 1
     left_is_ket = (
-        not left_is_scalar
-        and left.shape[1] == 1
-        or (left_is_scalar and scalar_is_ket)
+        not left_is_scalar and left.shape[1] == 1 or (left_is_scalar and scalar_is_ket)
     )
 
     ket = op._tf @ right._tf

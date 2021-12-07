@@ -39,9 +39,7 @@ def _column_unstack_shape_check(in_shape, rows):
 def reshape_tftensor(matrix, n_rows_out, n_cols_out):
     out_shape = (n_rows_out, n_cols_out)
     _reshape_check_input(matrix.shape, out_shape)
-    return matrix._fast_constructor(
-        tf.reshape(matrix._tf, out_shape), shape=out_shape
-    )
+    return matrix._fast_constructor(tf.reshape(matrix._tf, out_shape), shape=out_shape)
 
 
 def column_stack_tftensor(matrix):
@@ -66,8 +64,7 @@ def column_unstack_tftensor(matrix, rows):
 
 def split_columns_tftensor(matrix, copy=True):
     return [
-        matrix.__class__(matrix._tf[:, k], copy=copy)
-        for k in range(matrix.shape[1])
+        matrix.__class__(matrix._tf[:, k], copy=copy) for k in range(matrix.shape[1])
     ]
 
 
