@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -40,30 +40,35 @@ def max_tftensor(matrix):
 
 qutip.data.norm.frobenius.add_specialisations(
     [
-        (TfTensor, frobenius_tftensor),
+        (TfTensor128, frobenius_tftensor),
+        (TfTensor64, frobenius_tftensor),
     ]
 )
 
 qutip.data.norm.l2.add_specialisations(
     [
-        (TfTensor, l2_tftensor),
+        (TfTensor128, l2_tftensor),
+        (TfTensor64, l2_tftensor),
     ]
 )
 
 qutip.data.norm.trace.add_specialisations(
     [
-        (TfTensor, trace_tftensor),
+        (TfTensor128, trace_tftensor),
+        (TfTensor64, trace_tftensor),
     ]
 )
 
 qutip.data.norm.max.add_specialisations(
     [
-        (TfTensor, max_tftensor),
+        (TfTensor128, max_tftensor),
+        (TfTensor64, max_tftensor),
     ]
 )
 
 qutip.data.norm.one.add_specialisations(
     [
-        (TfTensor, one_tftensor),
+        (TfTensor128, one_tftensor),
+        (TfTensor64, one_tftensor),
     ]
 )

@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 from .adjoint import adjoint_tftensor
 import warnings
 
@@ -32,11 +32,12 @@ def project_tftensor(state):
         )
 
     out_shape = (state.shape[0], state.shape[0])
-    return TfTensor._fast_constructor(state._tf @ state_dag._tf, shape=out_shape)
+    return state._fast_constructor(state._tf @ state_dag._tf, shape=out_shape)
 
 
 qutip.core.data.project.add_specialisations(
     [
-        (TfTensor, TfTensor, project_tftensor),
+        (TfTensor128, TfTensor128, project_tftensor),
+        (TfTensor64, TfTensor64, project_tftensor),
     ]
 )

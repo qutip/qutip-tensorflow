@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -20,6 +20,7 @@ def trace_tftensor(matrix):
 
 qutip.data.trace.add_specialisations(
     [
-        (TfTensor, trace_tftensor),
+        (TfTensor128, trace_tftensor),
+        (TfTensor64, trace_tftensor),
     ]
 )

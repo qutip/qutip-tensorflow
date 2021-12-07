@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -18,7 +18,7 @@ def pow_tftensor(matrix, n):
                          matrix has shape={matrix.shape}"""
         )
 
-    out = tf.eye(matrix.shape[0], matrix.shape[1], dtype=tf.complex128)
+    out = tf.eye(matrix.shape[0], matrix.shape[1], dtype=matrix._tf.dtype)
     pow = matrix._tf
 
     out = pow if n & 1 else out
@@ -31,11 +31,12 @@ def pow_tftensor(matrix, n):
             out = out @ pow
         n >>= 1
 
-    return TfTensor._fast_constructor(out, shape=matrix.shape)
+    return matrix._fast_constructor(out, shape=matrix.shape)
 
 
 qutip.data.pow.add_specialisations(
     [
-        (TfTensor, TfTensor, pow_tftensor),
+        (TfTensor128, TfTensor128, pow_tftensor),
+        (TfTensor64, TfTensor64, pow_tftensor),
     ]
 )

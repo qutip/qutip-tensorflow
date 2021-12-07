@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -15,11 +15,12 @@ def expm_tftensor(matrix):
             f"""Expm can only be performed in square matrix. This
                          matrix has shape={matrix.shape}"""
         )
-    return TfTensor._fast_constructor(tf.linalg.expm(matrix._tf), shape=matrix.shape)
+    return matrix._fast_constructor(tf.linalg.expm(matrix._tf), shape=matrix.shape)
 
 
 qutip.data.expm.add_specialisations(
     [
-        (TfTensor, TfTensor, expm_tftensor),
+        (TfTensor128, TfTensor128, expm_tftensor),
+        (TfTensor64, TfTensor64, expm_tftensor),
     ]
 )

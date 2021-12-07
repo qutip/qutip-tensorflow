@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -11,7 +11,7 @@ __all__ = ["kron_tftensor"]
 
 
 def kron_tftensor(left, right):
-    return TfTensor._fast_constructor(
+    return left._fast_constructor(
         tf.linalg.LinearOperatorKronecker(
             [
                 tf.linalg.LinearOperatorFullMatrix(left._tf),
@@ -22,4 +22,9 @@ def kron_tftensor(left, right):
     )
 
 
-qutip.data.kron.add_specialisations([(TfTensor, TfTensor, TfTensor, kron_tftensor)])
+qutip.data.kron.add_specialisations(
+    [
+        (TfTensor128, TfTensor128, TfTensor128, kron_tftensor),
+        (TfTensor64, TfTensor64, TfTensor64, kron_tftensor),
+    ]
+)

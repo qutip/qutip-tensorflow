@@ -1,5 +1,5 @@
 import qutip
-from .tftensor import TfTensor
+from .tftensor import TfTensor128, TfTensor64
 import warnings
 
 with warnings.catch_warnings():
@@ -13,8 +13,7 @@ __all__ = ["matmul_tftensor"]
 def _check_shape(left, right, out):
     if left.shape[1] != right.shape[0]:
         raise ValueError(
-            "incompatible matrix shapes " + str(left.shape) + " and "
-            + str(right.shape)
+            "incompatible matrix shapes " + str(left.shape) + " and " + str(right.shape)
         )
     if (
         out is not None
@@ -45,9 +44,14 @@ def matmul_tftensor(left, right, scale=1, out=None):
         result = matmul(scale * left._tf, right._tf)
 
     if out is None:
-        return TfTensor._fast_constructor(result, shape=shape)
+        return left._fast_constructor(result, shape=shape)
     else:
         out._tf = result + out._tf
 
 
-qutip.data.matmul.add_specialisations([(TfTensor, TfTensor, TfTensor, matmul_tftensor)])
+qutip.data.matmul.add_specialisations(
+    [
+        (TfTensor128, TfTensor128, TfTensor128, matmul_tftensor),
+        (TfTensor64, TfTensor64, TfTensor64, matmul_tftensor),
+    ]
+)
