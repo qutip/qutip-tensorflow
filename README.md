@@ -17,33 +17,47 @@ Once qutip-tensorflow is imported, it hooks into QuTiP adding a new data backed
 based on TensorFlow's Tensor. It is hence not necessary to use any of
 qutip-tensorflow's functions explicitly.
 
-The main class implemented in qutip-tensorflow is `TfTensor` that
-wraps around a `Tensor` to provide compatibility between QuTiP and TensorFlow.
-It is possible to instantiate a new `Qobj` backed with a `TfTensor` using:
+The main class implemented in qutip-tensorflow is `TfTensor128` that
+wraps around a `tf.Tensor` to provide compatibility between QuTiP and TensorFlow.
+It is possible to instantiate a new `Qobj` backed with a `TfTensor128` using:
 ```python
 import qutip
 import tensorflow as tf
 qobj = qutip.Qobj(tf.constant([1, 2]))
-qobj.data  # Instance of TfTensor
+qobj.data  # Instance of TfTensor128
 ```
 
-You can still access the underlying `Tensor` with the attribute `_tf`.
+You can still access the underlying `tf.Tensor` with the attribute `_tf`.
 ```python
-qobj.data._tf  # Instance of tf.Tensor
+qobj.data._tf  # Instance of tf.Tensor with complex128 dtype
 ```
 
 QuTiP provides several useful functions for array creation. These return by
 default a `Qobj` backed with either a `Dense` or `CSR` data container. To
-obtain a `Qobj` backed with a `TfTensor` it suffices to use the `to` method:
+obtain a `Qobj` backed with a `TfTensor128` it suffices to use the `to` method:
 ```python
 sx = qutip.sigmax()  # Pauli X matrix
 sx.data  # Instance of `CSR`
-sx = sx.to('tftensor') # 'TfTensor' also works
-sx.data  # Instance of `TfTensor`
+sx = sx.to('tftensor') # 'TfTensor', 'tftensor128' and 'TfTensor128' also works
+sx.data  # Instance of `TfTensor128`
 ```
 
 When importing qutip-tensorflow, operations are done using the default detected
-device. Hence, if a GPU is configured by TensorFlow, it will use make use of it.
+device. Hence, if a GPU is configured by TensorFlow, it will employ it.
+
+By default, the native QuTiP `Dense` and `CSR` classes represent data using
+complex128. This is also what `TfTensor128` does by wrapping a
+`tensorflow.Tensor` with `dtype=tf.complex128`. Alternatively, it is possible
+to use `TfTensor64`:
+```python
+sx = qutip.sigmax()  # Pauli X matrix
+sx = sx.to('tftensor64') # 'TfTensor64' also works
+sx.data  # Instance of `TfTensor64`
+```
+This represents the data wrapping around a `tensorflow.Tensor` with
+`dtype=tf.complex64` data type. Using `TfTensor64` can lead to considerable
+speed-ups in the computation when using a GPU, although this comes at the
+expense of larger numerical errors. 
 
 qutip-tensorflow also works with TensorFlow's `GradientTape` for auto
 differentiation:
@@ -67,7 +81,7 @@ tape.gradient(y, variable)  # 1
 ```
 
 For a more involved example of how to use `GradientTape` for optimization
-purposes see the example notebook in `qutip_tensorflow/examples`, which can be
+purposes, see the example notebook in `qutip_tensorflow/examples`, which can be
 run in [colab](https://colab.research.google.com/) using a GPU. To configure
 the GPU in colab see [here](https://colab.research.google.com/notebooks/gpu.ipynb).
 
