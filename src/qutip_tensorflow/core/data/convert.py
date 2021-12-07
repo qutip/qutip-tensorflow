@@ -16,7 +16,6 @@ def _tf_to_dense(tftensor):
 
 
 def _tf64_from_tf128(tftensor):
-    # Posibly raise a warning?
     return TfTensor64._fast_constructor(
         tf.cast(tftensor._tf, tf.complex64), shape=tftensor.shape
     )
