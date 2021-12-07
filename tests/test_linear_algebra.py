@@ -1,3 +1,4 @@
+"""This file contains the benchmarks that are run the benchmark.py script."""
 import time
 import pytest
 import qutip as qt
@@ -63,9 +64,10 @@ def change_dtype(A, dtype):
         return A.to(dtype)
 
 #Supported dtypes
-dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.TfTensor128]
+dtype_list = [np, tf, sc, qt.data.Dense, qt.data.CSR, qtf.data.TfTensor128, 
+             qtf.data.TfTensor64]
 dtype_ids = ['numpy', 'tensorflow', 'scipy_csr', 'qutip_dense', 'qutip_csr',
-             'qutip_tftensor']
+             'qutip_tftensor_128', 'qutip_tftensor_64']
 @pytest.fixture(params = dtype_list, ids=dtype_ids)
 def dtype(request): return request.param
 

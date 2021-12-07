@@ -17,6 +17,7 @@ import numpy as np
 import scipy as sc
 import qutip as qt
 import qutip_tensorflow as qtf
+from qutip_tensorflow.core.data.tftensor import TfTensor128, TfTensor64
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -28,7 +29,7 @@ def sincronize_output(x, dtype):
     if dtype == tf:
         _ = x.numpy()
 
-    if dtype == qtf.core.data.tftensor.TfTensor:
+    if dtype==TfTensor128 or dtype==TfTensor64 :
         _ = x.data._tf.numpy()
 
 
