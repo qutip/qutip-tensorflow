@@ -4,6 +4,7 @@ import warnings
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from tensorflow import Variable
     from tensorflow.errors import InvalidArgumentError
 
 __all__ = ["add_tftensor", "sub_tftensor", "iadd_tftensor"]
@@ -21,7 +22,7 @@ def add_tftensor(left, right, scale=1):
     _check_shape(left, right)
 
     # If scale=1 we obtain a x2 speed-up if we do not multiply by the scale.
-    if scale == 1:
+    if scale == 1 and not isinstance(scale, Variable):
         return left._fast_constructor(left._tf + right._tf, shape=left.shape)
     else:
         return left._fast_constructor(left._tf + scale * right._tf, shape=left.shape)
@@ -35,7 +36,7 @@ def iadd_tftensor(left, right, scale=1):
     _check_shape(left, right)
 
     # If scale=1 we obtain a x2 speed-up if we do not multiply by the scale.
-    if scale == 1:
+    if scale == 1 and not isinstance(scale, Variable):
         left._tf = left._tf + right._tf
     else:
         left._tf = left._tf + scale * right._tf
