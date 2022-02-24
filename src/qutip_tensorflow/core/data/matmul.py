@@ -4,7 +4,7 @@ import warnings
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    from tensorflow import matmul
+    from tensorflow import matmul, Variable
 
 
 __all__ = ["matmul_tftensor"]
@@ -38,7 +38,7 @@ def matmul_tftensor(left, right, scale=1, out=None):
     _check_shape(left, right, out)
     shape = (left.shape[0], right.shape[1])
 
-    if scale == 1:
+    if scale == 1 and not isinstance(scale, Variable):
         result = matmul(left._tf, right._tf)
     else:
         result = matmul(scale * left._tf, right._tf)
