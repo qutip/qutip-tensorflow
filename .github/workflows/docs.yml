@@ -20,11 +20,6 @@ jobs:
         run: |
           python -mpip install -r doc/requirements.txt
 
-      - name: Install QuTiP from GitHub
-        run: |
-          python -mpip install git+https://github.com/qutip/qutip.git@dev.major
-          python -c 'import qutip; qutip.about()'
-
       - name: Install qutip-tensorflow from GitHub
         run: |
           python -mpip install .[full]
