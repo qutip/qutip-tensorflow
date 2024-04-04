@@ -34,11 +34,6 @@ jobs:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Install QuTiP from GitHub
-        run: |
-          python -mpip install git+https://github.com/qutip/qutip.git@dev.major
-          python -c 'import qutip; qutip.about()'
-
       - name: Install qutip-tensorflow and dependencies
         # Install in editable mode so Coveralls detects the tree structure
         # relative to the git repository root as well.
