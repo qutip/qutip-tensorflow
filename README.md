@@ -1,3 +1,10 @@
+> [!Warning]
+>
+> This is an experimental package that we still maintain but for which we do not plan any further updates in the near future.
+> Please, take a look a [`qutip-jax`](https://github.com/qutip/qutip-jax) as an alternative that is actively developed.
+
+
+
 qutip-tensorflow: TensorFlow backend for QuTiP
 ==============================================
 
